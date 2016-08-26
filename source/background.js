@@ -3,6 +3,18 @@ LOGGER("Background is running");
 var urls = ['plus.google.com', '.facebook.com', 'twitter.com','instagram.com','linkedin.com','tumblr.com'];
 var youtubeURL = "www.youtube.com/watch";
 var count = 0;
+var CONSTANT = {
+	"FACEBOOK":{
+		"URL":".facebook.com",
+		"MENUS":{
+			"CONFIRM-FRIEND":"confirm-friend-request",
+			"REQUEST-FRIEND":"send-friend-request",
+			"LIKE-ALL":"like-all",
+			"INVITE-FRIEND":"invite-friend",
+			"COMMENT":"comment"
+		}
+	}
+}
 
 chrome.browserAction.onClicked.addListener(function(tab) {
 	try {
@@ -36,6 +48,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 		LOGGER(' Exception on chrome.tabs.onUpdated');
 	}
 	likeYoutubeVideo(tab.url);
+	setCurrentTab(tab);
 });
 chrome.runtime.onInstalled.addListener(function(details) {
 	LOGGER("on Installed");
@@ -72,20 +85,13 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 		}		
 	}
 });
-var CONSTANT = {
-	"FACEBOOK":{
-		"MENUS":{
-			"CONFIRM-FRIEND":"confirm-friend-request",
-			"REQUEST-FRIEND":"send-friend-request",
-			"LIKE-ALL":"like-all",
-			"INVITE-FRIEND":"invite-friend",
-			"COMMENT":"comment"
-		}
-	}
-}
 
 function genericOnClick(info, tab) {
   LOGGER("Cliked : "+ info.menuItemId);
+  if(!isFacebook(tab)){
+  		LOGGER("Context menus support Facebook only.");
+  		return;
+  }
   switch(info.menuItemId){
   	case CONSTANT["FACEBOOK"]["MENUS"]["CONFIRM-FRIEND"]:
   		executeScripts(null, [ 
@@ -187,6 +193,9 @@ function getDefaultText(tab){
 	}
 }
 function isFacebook(tab){
+	if(!tab || !tab.url){
+		return false;
+	}
 	var url = tab.url;
 	if(url.indexOf(urls[1]) > 1){
 		return true;

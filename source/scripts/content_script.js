@@ -92,7 +92,7 @@ LOGGER('Content script running........... : '+urlOrigin);
 					LOGGER('Like all post : '+sad_posts.length);
 					break;
 				case 'comment':
-					sad_posts = $("a[data-testid='fb-ufi-unlikelink'][aria-pressed='false'],a[class='UFILikeLink'][data-ft='{\"tn\":\">\"}']");
+					sad_posts = $("a[data-testid='fb-ufi-likelink'][aria-pressed='false'],a[class='UFILikeLink'][data-ft='{\"tn\":\">\"}']");
 					LOGGER('Like all comment : '+sad_posts.length);
 					break;
 				case 'both':
