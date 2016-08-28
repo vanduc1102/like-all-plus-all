@@ -145,16 +145,17 @@ function genericOnClick(info, tab) {
 }
 
 function createContextMenus(){
-	var rootFbMenu = chrome.contextMenus.create({id:"facebook-auto","title": "Facebook Auto", "contexts":["all"]});
+	var fbUrlParterns = ["https://*.facebook.com/*","http://*.facebook.com/*"];
+	var rootFbMenu = chrome.contextMenus.create({id:"facebook-auto","title": "Facebook Auto", "contexts":["all"], documentUrlPatterns : fbUrlParterns});
 	chrome.contextMenus.onClicked.addListener(genericOnClick);
 
 	// Create a parent item and two children.
-	chrome.contextMenus.create({"id":CONSTANT["FACEBOOK"]["MENUS"]["CONFIRM-FRIEND"],"title": "Confirm friend requests","parentId": rootFbMenu});
-	chrome.contextMenus.create({"id":CONSTANT["FACEBOOK"]["MENUS"]["REQUEST-FRIEND"],"title": "Send friend requests","parentId": rootFbMenu});
-	chrome.contextMenus.create({"id":"separator1",type:'separator',"parentId": rootFbMenu});
-	chrome.contextMenus.create({"id":CONSTANT["FACEBOOK"]["MENUS"]["INVITE-FRIEND-PAGE"],"title": "Invite friend on Page","parentId": rootFbMenu});
-	chrome.contextMenus.create({"id":CONSTANT["FACEBOOK"]["MENUS"]["INVITE-FRIEND-EVENT"],"title": "Invite friend on Event","parentId": rootFbMenu});
-	chrome.contextMenus.create({"id":CONSTANT["FACEBOOK"]["MENUS"]["LIKE-ALL"],"title": "Comming soon","parentId": rootFbMenu});
+	chrome.contextMenus.create({"id":CONSTANT["FACEBOOK"]["MENUS"]["CONFIRM-FRIEND"],"title": "Confirm friend requests","parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
+	chrome.contextMenus.create({"id":CONSTANT["FACEBOOK"]["MENUS"]["REQUEST-FRIEND"],"title": "Send friend requests","parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
+	chrome.contextMenus.create({"id":"separator1",type:'separator',"parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
+	chrome.contextMenus.create({"id":CONSTANT["FACEBOOK"]["MENUS"]["INVITE-FRIEND-PAGE"],"title": "Invite friend on Page","parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
+	chrome.contextMenus.create({"id":CONSTANT["FACEBOOK"]["MENUS"]["INVITE-FRIEND-EVENT"],"title": "Invite friend on Event","parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
+	chrome.contextMenus.create({"id":CONSTANT["FACEBOOK"]["MENUS"]["LIKE-ALL"],"title": "Comming soon","parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
 }
 
 createContextMenus();
