@@ -1,48 +1,74 @@
 LOGGER('Send friend request');
-if(checkLoadMoreAble()){
-	loadMoreByScroll(null,5).then(function(response){
-		LOGGER('Done load more page');	
-		var buttons = $("li .FriendRequestAdd").filter(function(index){
-			var btn = $(this);
-			return !btn.hasClass('hidden_elem') && btn.is(":visible");
+chrome.storage.sync.get({
+	"google": "post",
+	"google_time":"1.0",
+	"facebook": "post",
+	"facebook_time":"1.0",
+	"twitter_time":"0.8",
+	"numberOfScroll":0
+  }, function(cfgData) {
+  	LOGGER(cfgData);
+  	var scrollTimes = Number(cfgData["numberOfScroll"]); 
+  	var timerPerClick = Number(cfgData["facebook_time"]) * 1000 * 2;
+  	main(scrollTimes, timerPerClick);	
+});
+
+function main(scrollTimes, timerPerClick){
+	LOGGER('scrollTimes '+ scrollTimes + " ; timerPerClick : "+ timerPerClick);
+	if(checkLoadMoreAble()){
+		loadMoreByScroll(null,scrollTimes).then(function(response){
+			LOGGER('Done load more page');	
+			var buttons = $("li .FriendRequestAdd").filter(function(index){
+				var btn = $(this);
+				return !btn.hasClass('hidden_elem') && btn.is(":visible");
+			});
+			LOGGER('Number of buttons '+ buttons.length);	
+			clickButtonListOneByOne(buttons,timerPerClick,0).then(function(done){
+				sendNumberToActionButton(0);
+			});	
 		});
-		LOGGER('Number of buttons '+ buttons.length);	
-		clickButtonListOneByOne(buttons,2000,0).then(function(done){
-			sendNumberToActionButton(0);
-		});	
-	});
-}else{
-	var dialogBox = $("div[role='dialog'] ul[id*='reaction_profile_browser'").filter(function(index){
-		return $(this).is(":visible");
-	});
-	if(dialogBox.length > 0 ){
-		var buttons = dialogBox.find(".FriendButton > button.FriendRequestAdd").filter(function(index){
-			var btn = $(this);
-			return !btn.hasClass('hidden_elem') && btn.is(":visible");
-		});
-		LOGGER('Number of buttons '+ buttons.length);
-		clickButtonListOneByOne(buttons,2000,0).then(function(response){
-			sendNumberToActionButton(0);
-			LOGGER("Finished find friend on Post");
-		});	
-	}else if(checkGroupMememer()){
-		var loadMoreSelector = "a[href*='/ajax/browser/list/group_members/']";
-		frLoadMoreByScrollWithSelectorCondition(loadMoreSelector).then(function(response){
-				var buttons = $("button.FriendRequestAdd.addButton").filter(function(index){
-					return  $(this).is(":visible");
-				});
-				LOGGER('Number of buttons '+ buttons.length);
-				clickButtonListOneByOne(buttons,2000,0).then(function(response){
-					sendNumberToActionButton(0);
-					LOGGER("Finished find friend on Post");
-				});	
+	}else if(isFriendsOfFriend()){
+		loadMoreByScroll(null,scrollTimes).then(function(response){
+			LOGGER('isFriendsOfFriend Done load more page');	
+			var buttons = getAllVisible($("button.FriendRequestAdd.addButton"));
+			LOGGER('isFriendsOfFriend Number of buttons '+ buttons.length);	
+			clickButtonListOneByOne(buttons,timerPerClick,0).then(function(done){
+				sendNumberToActionButton(0);
+			});	
 		});
 	}else{
-		var buttonCssSelector = 'div#rightCol div.clearfix.ego_unit button';
-		clickOnXpathButtonTill(buttonCssSelector,3000,100).then(function(response){
-			sendNumberToActionButton(0);
-			LOGGER("Finished find of left panel");
+		var dialogBox = $("div[role='dialog'] ul[id*='reaction_profile_browser'").filter(function(index){
+			return $(this).is(":visible");
 		});
+		if(dialogBox.length > 0 ){
+			var buttons = dialogBox.find(".FriendButton > button.FriendRequestAdd").filter(function(index){
+				var btn = $(this);
+				return !btn.hasClass('hidden_elem') && btn.is(":visible");
+			});
+			LOGGER('Number of buttons '+ buttons.length);
+			clickButtonListOneByOne(buttons,timerPerClick,0).then(function(response){
+				sendNumberToActionButton(0);
+				LOGGER("Finished find friend on Post");
+			});	
+		}else if(checkGroupMememer()){
+			var loadMoreSelector = "a[href*='/ajax/browser/list/group_members/']";
+			frLoadMoreByScrollWithSelectorCondition(loadMoreSelector).then(function(response){
+					var buttons = $("button.FriendRequestAdd.addButton").filter(function(index){
+						return  $(this).is(":visible");
+					});
+					LOGGER('Number of buttons '+ buttons.length);
+					clickButtonListOneByOne(buttons,TIME_PER_CLICK,0).then(function(response){
+						sendNumberToActionButton(0);
+						LOGGER("Finished find friend on Post");
+					});	
+			});
+		}else{
+			var buttonCssSelector = 'div#rightCol div.clearfix.ego_unit button';
+			clickOnXpathButtonTill(buttonCssSelector,timerPerClick + 2000,100).then(function(response){
+				sendNumberToActionButton(0);
+				LOGGER("Finished find of left panel");
+			});
+		}
 	}
 }
 
@@ -62,6 +88,11 @@ function checkGroupMememer(){
 function frLoadMoreByScrollWithSelectorCondition(selectorCondition){
 	var d = $.Deferred();
 	return frScrollToBottomConditionWrapper(d,1,selectorCondition);
+}
+
+function isFriendsOfFriend(){
+	var friendsLink = getAllVisible($("#pagelet_timeline_medley_friends"));
+	return friendsLink.length > 0;
 }
 
 function frScrollToBottomConditionWrapper(d,times,conditionSelector){
