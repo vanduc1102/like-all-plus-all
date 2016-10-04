@@ -240,3 +240,10 @@ function getFirstElement(cssSelector){
 	});
 	return elements.get(0);
 }
+
+function getAllVisible(elements){
+	var visibleElements = elements.filter(function(index){
+		return $(this).is(":visible");
+	});
+	return visibleElements;
+}
