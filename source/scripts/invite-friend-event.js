@@ -1,4 +1,17 @@
-$(function(){
+chrome.storage.sync.get({
+	"google": "post",
+	"google_time":"1.0",
+	"facebook": "post",
+	"facebook_time":"1.0",
+	"twitter_time":"0.8",
+	"numberOfScroll":0
+  }, function(cfgData) {
+  	LOGGER(cfgData);
+  	var scrollTimes = Number(cfgData["numberOfScroll"]); 
+  	var timerPerClick = Number(cfgData["facebook_time"]) * 1000 * 2;
+  	main(timerPerClick, scrollTimes);	
+});
+function main(timerPerClick, scrollTimes){
 	LOGGER('Invite friend request to Event page');
 	if(checkLoadMoreAble()){
 		var scrollSelector = "div.uiScrollableAreaGripper";
@@ -11,26 +24,45 @@ $(function(){
 				containterElement.css({'opacity':1});
 			}
 			inviteLoadMoreByScrollWithSelectorCondition(scrollContainerElement,scrollSelector,buttonSelector).then(function(response){
-				LOGGER('Done load more page');	
-				var buttons = scrollContainerElement.find(buttonSelector).filter(function(index){
-					return $(this).is(":visible");
-				});
-				LOGGER('Number of buttons '+ buttons.length);	
-				clickButtonListOneByOne(buttons,2000,0).then(function(done){
-					sendNumberToActionButton(0);
-				});	
+				LOGGER('Done load more page');
+				var checkAllButton = scrollContainerElement.find("div.rfloat a");
+				if(checkAllButton.length > 0){
+					var allButtons = scrollContainerElement.find("a[role=\"checkbox\"]");
+					var unselectedButtons = scrollContainerElement.find(buttonSelector);
+					if(allButtons.length < unselectedButtons.length * 2){
+						checkAllButton[0].click();
+					}
+					sendInvitation(timerPerClick);
+				}else{
+					var buttons = getAllVisible(scrollContainerElement.find(buttonSelector));
+					LOGGER('Number of buttons '+ buttons.length);	
+					clickButtonListOneByOne(buttons,timerPerClick,0).then(function(done){
+						sendNumberToActionButton(0);
+						sendInvitation(timerPerClick);
+					});
+				}
+					
 			});
 		}else{
 			var buttonCssSelector = 'a[role="button"][ajaxify^="/ajax/events/invite/suggestions/"]';
-			clickOnXpathButtonTill(buttonCssSelector,3000,100).then(function(response){
+			clickOnXpathButtonTill(buttonCssSelector,timerPerClick + 1000,100).then(function(response){
 				sendNumberToActionButton(0);
-				LOGGER("Finished find of left panel");
+				LOGGER("Finished find from left panel");
 			});
 		}
 	}else{
 		alert("Please goto your Event page");
 	}
-});
+}
+
+function sendInvitation(timerPerClick){
+	setTimeout(function(){
+		var sendInvitationBtn = getAllVisible($('#inviter > table .uiOverlayFooterButtons > button.layerConfirm'));
+		if(sendInvitationBtn.length > 0){
+			sendInvitationBtn[0].click();
+		}
+	},timerPerClick);
+}
 function checkFormIsOpen(){
 	var formSelector = "form[action^=\"/ajax/events/permalink/invite.php\"]";
 	var formSelectorObject  = $(formSelector);

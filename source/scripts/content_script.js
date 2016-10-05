@@ -158,7 +158,7 @@ LOGGER('Content script running........... : '+urlOrigin);
 			}
 			return array;
 		}
-		LOGGER(happy);
+		
 		LOGGER(time);
 		
 		if(isLinkedInPeopleYouMayKnow()){
