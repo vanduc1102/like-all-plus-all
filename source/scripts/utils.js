@@ -247,3 +247,6 @@ function getAllVisible(elements){
 	});
 	return visibleElements;
 }
+function isVisbile(element){
+	return element.is(":visible");
+}

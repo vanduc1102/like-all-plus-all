@@ -58,9 +58,7 @@ chrome.runtime.onInstalled.addListener(function(details) {
 		LOGGER("Option is not opened yet!" + JSON.stringify(cfgData));
 		if (cfgData["isOptionOpened"] == "false") {
 			LOGGER("Option tab is openning");
-			chrome.tabs.create({
-				url : "options.html"
-			}); 
+			openOptionPage();
 		}
 	});
 	
@@ -92,9 +90,12 @@ var CONSTANT = {
 			"CONFIRM-FRIEND":"confirm-friend-request",
 			"REQUEST-FRIEND":"send-friend-request",
 			"LIKE-ALL":"like-all",
+			"LIKE-POST":'like-post',
+			"LIKE-COMMENT":'like-comment',
 			"INVITE-FRIEND-PAGE":"invite-friend-page",
 			"INVITE-FRIEND-EVENT":"invite-friend-event",
-			"COMMENT":"comment"
+			"COMMENT":"comment",
+			"OPTION":"option"
 		}
 	}
 }
@@ -138,6 +139,34 @@ function genericOnClick(info, tab) {
 		]);
 		updateNumberOfUsed();
   		break;
+  	case CONSTANT["FACEBOOK"]["MENUS"]["LIKE-ALL"]:
+  		executeScripts(null, [ 
+		    { file : "libs/jquery.js" }, 
+		    { file : "scripts/utils.js" },
+		    { file : "scripts/like-all.js" }
+		]);
+		updateNumberOfUsed();
+  		break;
+  	case CONSTANT["FACEBOOK"]["MENUS"]["LIKE-POST"]:
+  		executeScripts(null, [ 
+		    { file : "libs/jquery.js" }, 
+		    { file : "scripts/utils.js" },
+		    { file : "scripts/like-post.js" }
+		]);
+		updateNumberOfUsed();
+  		break;
+  	case CONSTANT["FACEBOOK"]["MENUS"]["LIKE-COMMENT"]:
+  		executeScripts(null, [ 
+		    { file : "libs/jquery.js" }, 
+		    { file : "scripts/utils.js" },
+		    { file : "scripts/like-comment.js" }
+		]);
+		updateNumberOfUsed();
+  		break;
+  	case CONSTANT["FACEBOOK"]["MENUS"]["OPTION"]:
+  		openOptionPage();
+		//updateNumberOfUsed();
+  		break;
   	default:
   		break;
   }
@@ -156,7 +185,11 @@ function createContextMenus(){
 	chrome.contextMenus.create({"id":CONSTANT["FACEBOOK"]["MENUS"]["INVITE-FRIEND-PAGE"],"title": "Invite friend on Page","parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
 	chrome.contextMenus.create({"id":CONSTANT["FACEBOOK"]["MENUS"]["INVITE-FRIEND-EVENT"],"title": "Invite friend on Event","parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
 	chrome.contextMenus.create({"id":"separator2",type:'separator',"parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
-	chrome.contextMenus.create({"id":CONSTANT["FACEBOOK"]["MENUS"]["LIKE-ALL"],"title": "Comming soon","parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
+	chrome.contextMenus.create({"id":CONSTANT["FACEBOOK"]["MENUS"]["LIKE-ALL"],"title": "Like all","parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
+	chrome.contextMenus.create({"id":CONSTANT["FACEBOOK"]["MENUS"]["LIKE-POST"],"title": "Like post","parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
+	chrome.contextMenus.create({"id":CONSTANT["FACEBOOK"]["MENUS"]["LIKE-COMMENT"],"title": "Like comment","parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
+	chrome.contextMenus.create({"id":"separator3",type:'separator',"parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
+	chrome.contextMenus.create({"id":CONSTANT["FACEBOOK"]["MENUS"]["OPTION"],"title": "Option","parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
 }
 
 createContextMenus();
@@ -299,4 +332,9 @@ function updateNumberOfUsed(){
 		times++;
 		setStorageNumber(countNumberFieldName,times);
 	});
+}
+function openOptionPage(){
+	chrome.tabs.create({
+		url : "options.html"
+	}); 
 }
