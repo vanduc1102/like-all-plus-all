@@ -48,7 +48,6 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 		LOGGER(' Exception on chrome.tabs.onUpdated');
 	}
 	likeYoutubeVideo(tab.url);
-	setCurrentTab(tab);
 });
 chrome.runtime.onInstalled.addListener(function(details) {
 	LOGGER("on Installed");
@@ -95,6 +94,7 @@ var CONSTANT = {
 			"INVITE-FRIEND-PAGE":"invite-friend-page",
 			"INVITE-FRIEND-EVENT":"invite-friend-event",
 			"COMMENT":"comment",
+			"STOP":"stop",
 			"OPTION":"option"
 		}
 	}
@@ -167,6 +167,11 @@ function genericOnClick(info, tab) {
   		openOptionPage();
 		//updateNumberOfUsed();
   		break;
+  	case CONSTANT["FACEBOOK"]["MENUS"]["STOP"]:
+  		executeScripts(null, [ 
+		    { file : "scripts/stop-reload.js" }
+		]);
+  		break;
   	default:
   		break;
   }
@@ -189,6 +194,7 @@ function createContextMenus(){
 	chrome.contextMenus.create({"id":CONSTANT["FACEBOOK"]["MENUS"]["LIKE-POST"],"title": "Like post","parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
 	chrome.contextMenus.create({"id":CONSTANT["FACEBOOK"]["MENUS"]["LIKE-COMMENT"],"title": "Like comment","parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
 	chrome.contextMenus.create({"id":"separator3",type:'separator',"parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
+	chrome.contextMenus.create({"id":CONSTANT["FACEBOOK"]["MENUS"]["STOP"],"title": "Stop by Reload (F5)","parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
 	chrome.contextMenus.create({"id":CONSTANT["FACEBOOK"]["MENUS"]["OPTION"],"title": "Option","parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
 }
 

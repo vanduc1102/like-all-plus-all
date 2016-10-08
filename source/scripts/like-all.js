@@ -1,4 +1,5 @@
-LOGGER('Like all');
+LOGGER_CATEGORY = "Like all";
+var MAX_LOAD_MORE_COMMENT = 50;
 chrome.storage.sync.get({
 	"google": "post",
 	"google_time":"1.0",
@@ -16,11 +17,15 @@ chrome.storage.sync.get({
 function main(scrollTimes, timerPerClick){
 	LOGGER('scrollTimes '+ scrollTimes + " ; timerPerClick : "+ timerPerClick);
 	loadMoreByScroll(null,scrollTimes).then(function(response){
-		LOGGER('isFriendsOfFriend Done load more page');	
-		var buttons = getAllVisible($("button.FriendRequestAdd.addButton"));
-		LOGGER('isFriendsOfFriend Number of buttons '+ buttons.length);	
-		clickButtonListOneByOne(buttons,timerPerClick,0).then(function(done){
-			sendNumberToActionButton(0);
-		});	
+		LOGGER('Done load more by scroll');
+		var moreCommentSelecor = "a[role='button'][class='UFIPagerLink']";
+		loadMoreByElement(moreCommentSelecor, MAX_LOAD_MORE_COMMENT).then(function(){
+			LOGGER('Done load more by click on button');
+			var buttons = $("a[role='button'][aria-pressed='false'],a[role='button'][data-ft='{\"tn\":\">\"}']");
+			LOGGER('Number of buttons '+ buttons.length);	
+			clickButtonListOneByOne(buttons,timerPerClick,0).then(function(done){
+				sendNumberToActionButton(0);
+			});	
+		});		
 	});	
 }

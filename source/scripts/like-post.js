@@ -1,4 +1,4 @@
-LOGGER('Like post');
+LOGGER_CATEGORY = "Like all";
 chrome.storage.sync.get({
 	"google": "post",
 	"google_time":"1.0",
@@ -16,12 +16,12 @@ chrome.storage.sync.get({
 function main(scrollTimes, timerPerClick){
 	LOGGER('scrollTimes '+ scrollTimes + " ; timerPerClick : "+ timerPerClick);
 	loadMoreByScroll(null,scrollTimes).then(function(response){
-		LOGGER('isFriendsOfFriend Done load more page');	
+		LOGGER('Like post  Done load more page');	
 		var buttons = $("a[role='button'][aria-pressed='false']").filter(function(index){
 			var button = $(this);
-			return !button.hasClass("UFIReactionLink") && isVisbile(button);
+			return !button.hasClass("UFIReactionLink");
 		});
-		LOGGER('isFriendsOfFriend Number of buttons '+ buttons.length);	
+		LOGGER('Like post  Number of buttons '+ buttons.length);	
 		clickButtonListOneByOne(buttons,timerPerClick,0).then(function(done){
 			sendNumberToActionButton(0);
 		});	
