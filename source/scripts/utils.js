@@ -1,8 +1,14 @@
 var DEBUG = false;
 var CLICK_BUTTON = true;
+var LOGGER_CATEGORY;
 function LOGGER(p){
 	if(DEBUG){
-		console.log(p);
+		if(LOGGER_CATEGORY){
+			console.log(LOGGER_CATEGORY + " - ",p);
+		}else{
+			console.log(p);
+		}
+		
 	}
 }
 function clickOnButton(button, time, number){
@@ -12,7 +18,7 @@ function clickOnButton(button, time, number){
 		// The root of everything
 		number ++;
 		LOGGER("button clicked");		
-		if(!DEBUG && CLICK_BUTTON){
+		if(CLICK_BUTTON){
 			button.click();
 		}		
 		sendNumberToActionButton(number);
@@ -33,7 +39,9 @@ function clickButtonListOneByOne(buttons, time, number) {
   d.resolve();
   return promise;
 }
-
+/*
+* This method click on cssSelector till expected times.
+*/
 function loadMoreByElement(cssSelector, expected){
 	var d = $.Deferred();
 	return clickOnElementTill(cssSelector,d, 1, expected);
@@ -41,7 +49,7 @@ function loadMoreByElement(cssSelector, expected){
 
 function loadMoreByScroll(cssSelector,expected){
 	var d = $.Deferred();
-	return scrollWrapper(cssSelector,d,1,expected);
+	return scrollWrapper(cssSelector,d,0,expected);
 }
 
 function clickOnXpathButtonTill(buttonXpath,time,expected){
@@ -93,9 +101,9 @@ function scrollWrapper(cssSelector,d,times,expected){
 		d.resolve();
 		return d.promise();
 	}
-	LOGGER("Load more by scroll  "+ times);
 	times ++;
 	scrollToBottom(cssSelector).then(function(resolve){
+		LOGGER("Load more by scroll  "+ times);
 		scrollWrapper(cssSelector,d,times,expected);
 	});
 	return d.promise();
