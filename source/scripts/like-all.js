@@ -9,7 +9,7 @@ chrome.storage.sync.get({
 	"numberOfScroll":0
   }, function(cfgData) {
   	LOGGER(cfgData);
-  	var scrollTimes = Number(cfgData["numberOfScroll"]); 
+  	var scrollTimes = Number(cfgData["numberOfScroll"]) + 1; 
   	var timerPerClick = Number(cfgData["facebook_time"]) * 1000 * 2;
   	main(scrollTimes, timerPerClick);	
 });

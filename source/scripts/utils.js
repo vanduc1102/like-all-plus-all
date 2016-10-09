@@ -49,7 +49,7 @@ function loadMoreByElement(cssSelector, expected){
 
 function loadMoreByScroll(cssSelector,expected){
 	var d = $.Deferred();
-	return scrollWrapper(cssSelector,d,0,expected);
+	return scrollWrapper(cssSelector,d,1,expected);
 }
 
 function clickOnXpathButtonTill(buttonXpath,time,expected){
