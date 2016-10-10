@@ -1,6 +1,13 @@
 //The main function.
 LOGGER("Background is running");
-var urls = ['plus.google.com', '.facebook.com', 'twitter.com','instagram.com','linkedin.com','tumblr.com'];
+var urls = ['plus.google.com', 
+	'.facebook.com', 
+	'twitter.com',
+	'instagram.com',
+	'linkedin.com',
+	'tumblr.com',
+	'incomeon.com'
+];
 var youtubeURL = "www.youtube.com/watch";
 var count = 0;
 var CONSTANT = {

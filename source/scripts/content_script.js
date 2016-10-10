@@ -11,7 +11,12 @@ LOGGER('Content script running........... : '+urlOrigin);
 		"numberOfScroll":0
 	  }, function(cfgData) {
 	  	LOGGER(cfgData);
-
+		if(isIncomeon()){
+			var time = parseFloat(cfgData['twitter_time'])*1000;
+			var scroll = Number(cfgData['numberOfScroll']) + 1;
+			executeIncomeonLike(time,  scroll);
+			return;
+		}
 		if(cfgData['numberOfScroll'] > 1 && isScrollable()){
 			autoScrollToBottom(cfgData);
 		}else{
@@ -139,6 +144,7 @@ LOGGER('Content script running........... : '+urlOrigin);
 				return classAttr.indexOf("liked") < 0;
 			});
 		}
+		
 
 		var happy = createHappyButtons(sad_posts);
 		
@@ -219,8 +225,10 @@ LOGGER('Content script running........... : '+urlOrigin);
 		    	triggerClickEvent(happy[0]);
 		    }else{
 		    	// The root of everything.
-		    	LOGGER("sent a like");
-		    	happy[0].click();
+		    	LOGGER("sent a like "+happy.length);
+				if(CLICK_BUTTON){
+					happy[0].click();
+				}
 		    }
 
 			if(happy.length > 0){
@@ -286,8 +294,35 @@ function isLinkedInSearchPeople(){
 function isScrollable(){
 	return !(fullUrl.indexOf("https://www.linkedin.com/vsearch/") > -1);
 }
+function isIncomeon(){
+	return fullUrl.indexOf("incomeon.com") > -1;
+} 
+
+function executeIncomeonLike(timerPerClick, scroll){
+	LOGGER_CATEGORY = "executeIncomeonLike";
+	LOGGER("executeIncomeonLike ,timerPerClick : "+timerPerClick+" ; " +scroll);
+	var scrollSelector = "div#post_holder";
+	if($(scrollSelector).length < 1){
+		sendNumberToActionButton(0);
+		return;
+	}
+	loadMoreByScroll(scrollSelector, scroll).then(function(response){
+		LOGGER("Finished load more");
+		var buttons = $("i.fa.fa-check").filter(function(item){
+			var button = $(this);
+			return !button.hasClass('color-green');
+		});
+		LOGGER('Number of buttons '+ buttons.length);
+		var warnButtonSelector = "button.confirm";
+		clickButtonListOneByOneWithCloseWarning(buttons,timerPerClick,0, warnButtonSelector).then(function(done){
+			sendNumberToActionButton(0);
+		});	
+	});
+	
+}
 
 function clickButtonListOneByOne(buttons, time, number) {
+  LOGGER("content_script - clickButtonListOneByOne");
   var d = $.Deferred();
   var promise = d.promise();
   $.each(buttons, function(index, button) {
@@ -303,8 +338,11 @@ function clickOnButton(button, time, number){
 	var d = $.Deferred();
 	var rand = getRandom(1,1000) ;
 	setTimeout(function() {
+		LOGGER("content_script - clickOnButton - button clicked : "+number);
 		number ++;
-		button.click();		
+		if(CLICK_BUTTON){
+			button.click();	
+		}			
 		sendNumberToActionButton(number);
 	    d.resolve(number);
 	}, time + rand);
@@ -316,6 +354,7 @@ function getRandom(min,max){
 }
 
 function loadNextPage(number){
+	LOGGER("content_script - loadNextPage");
 	var d = $.Deferred();
 	var nextPageElement = $('a[class^="page-link"][href^="/vsearch"][rel^="next"]').get(0);
 	if(nextPageElement){
@@ -356,6 +395,7 @@ function triggerClickEvent(node){
 }
 
 function fireEvent(node, eventName) {
+	LOGGER("content_script - fireEvent");
     // Make sure we use the ownerDocument from the provided node to avoid cross-window problems
     var doc;
     if (node.ownerDocument) {

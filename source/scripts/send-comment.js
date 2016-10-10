@@ -1,5 +1,4 @@
 $(function(){
-	debugger;
 	//'div[contenteditable="true"]'
 	var editableElements = $("div[id*='addComment']").filter(function(index){
 		return $(this).is(":visible");

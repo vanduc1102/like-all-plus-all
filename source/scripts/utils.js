@@ -1,4 +1,4 @@
-var DEBUG = false;
+var DEBUG = true;
 var CLICK_BUTTON = true;
 var LOGGER_CATEGORY;
 function LOGGER(p){
@@ -39,6 +39,20 @@ function clickButtonListOneByOne(buttons, time, number) {
   d.resolve();
   return promise;
 }
+
+function clickButtonListOneByOneWithCloseWarning(buttons, time, number , warningButtonSelector) {
+  var d = $.Deferred();
+  var promise = d.promise();
+  $.each(buttons, function(index, button) {
+    promise = promise.then(function(response) {
+    	number ++;
+		clickOnElementAndWait(warningButtonSelector);
+    	return clickOnButton(button, time, number);
+    });
+  });
+  d.resolve();
+  return promise;
+}
 /*
 * This method click on cssSelector till expected times.
 */
@@ -46,7 +60,10 @@ function loadMoreByElement(cssSelector, expected){
 	var d = $.Deferred();
 	return clickOnElementTill(cssSelector,d, 1, expected);
 }
-
+/*
+Function scroll by given selector, 
+support scroll by javascript not default browser scroll.
+*/
 function loadMoreByScroll(cssSelector,expected){
 	var d = $.Deferred();
 	return scrollWrapper(cssSelector,d,1,expected);
@@ -74,15 +91,15 @@ function clickOnElementTill(cssSelector,d, times, expected){
 
 function clickOnElementAndWait(cssSelector){
 	var d = $.Deferred();
-	var nextPageElement = $(cssSelector).get(0);
+	var elementObject = $(cssSelector).get(0);
 	var rand = getRandom(1,1000) ;
-	if(nextPageElement){
+	if(elementObject){
 		setTimeout(function() {
-			nextPageElement.click();
+			elementObject.click();
 		}, 1000 + rand);
 		
 		setTimeout(function() {
-			LOGGER("loaded next page ");
+			LOGGER("clickOnElementAndWait  ");
 		    d.resolve();
 		}, 5000 + rand);
 	}else{
@@ -103,7 +120,7 @@ function scrollWrapper(cssSelector,d,times,expected){
 	}
 	times ++;
 	scrollToBottom(cssSelector).then(function(resolve){
-		LOGGER("Load more by scroll  "+ times);
+		LOGGER("Load more by scroll  "+ times );
 		scrollWrapper(cssSelector,d,times,expected);
 	});
 	return d.promise();
@@ -123,7 +140,6 @@ function clickOnXpathButtonRecursive(cssSelector, d, time, counter, expected){
 	}
 	return d.promise();
 }
-
 function scrollToBottom(cssSelector){
 	var d = $.Deferred();
 	if(cssSelector){
@@ -148,7 +164,7 @@ function scrollToBottomConditionWrapper(scrollbarSelector,d,times,conditionSelec
 		d.resolve();
 		return d.promise();
 	}
-	LOGGER("Load more by scroll  "+ times);
+	LOGGER("Load more by scroll  "+ times );
 	times ++;
 	scrollToBottomCondition(scrollbarSelector , conditionSelector).then(function(resolve){
 		scrollToBottomConditionWrapper(scrollbarSelector,d,times,conditionSelector);
