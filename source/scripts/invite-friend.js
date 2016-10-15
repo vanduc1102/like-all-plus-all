@@ -9,9 +9,10 @@ chrome.storage.sync.get({
   	LOGGER(cfgData);
   	var scrollTimes = Number(cfgData["numberOfScroll"]); 
   	var timerPerClick = Number(cfgData["facebook_time"]) * 1000 * 2;
-  	main(timerPerClick, scrollTimes);	
+  	inviteFriendEvent(timerPerClick, scrollTimes);	
+  	inviteFriendPage(timerPerClick, scrollTimes);
 });
-function main(timerPerClick, scrollTimes){
+function inviteFriendEvent(timerPerClick, scrollTimes){
 	LOGGER('Invite friend request to Event page');
 	if(checkLoadMoreAble()){
 		var scrollSelector = "div.uiScrollableAreaGripper";
@@ -54,7 +55,30 @@ function main(timerPerClick, scrollTimes){
 		alert("Please goto your Event page");
 	}
 }
+function inviteFriendPage(timerPerClick, scrollTimes){
+	LOGGER('Invite friend request');	
+	if(checkLoadMoreAble()){
+		var scrollSelector = ".fbProfileBrowserResult.scrollable.hideSummary";
+		var buttonSelector = "a.uiButton";
+		loadMoreByScrollWithSelectorCondition(scrollSelector,buttonSelector).then(function(response){
+			LOGGER('Done load more page');	
+			var buttons = $(buttonSelector).filter(function(index){
+				return $(this).is(":visible");
+			});
+			LOGGER('Number of buttons '+ buttons.length);	
+			clickButtonListOneByOne(buttons,timerPerClick,0).then(function(done){
+				sendNumberToActionButton(0);
+			});	
+		});
+	}else{
+		alert("Please goto your fanpage, and open invite friend list");
+	}
+};
 
+function checkLoadMoreAble() {
+ 	var form = $('form[action*="ajax/pages/invite/"]');
+ 	return form.is(":visible");
+}
 function sendInvitation(timerPerClick){
 	setTimeout(function(){
 		var sendInvitationBtn = getAllVisible($('#inviter > table .uiOverlayFooterButtons > button.layerConfirm'));

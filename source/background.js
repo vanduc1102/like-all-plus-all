@@ -10,19 +10,6 @@ var urls = ['plus.google.com',
 ];
 var youtubeURL = "www.youtube.com/watch";
 var count = 0;
-var CONSTANT = {
-	"FACEBOOK":{
-		"URL":".facebook.com",
-		"MENUS":{
-			"CONFIRM-FRIEND":"confirm-friend-request",
-			"REQUEST-FRIEND":"send-friend-request",
-			"LIKE-ALL":"like-all",
-			"INVITE-FRIEND":"invite-friend",
-			"COMMENT":"comment"
-		}
-	}
-}
-
 chrome.browserAction.onClicked.addListener(function(tab) {
 	try {
 		executeScripts(null, [ 
@@ -98,8 +85,7 @@ var CONSTANT = {
 			"LIKE-ALL":"like-all",
 			"LIKE-POST":'like-post',
 			"LIKE-COMMENT":'like-comment',
-			"INVITE-FRIEND-PAGE":"invite-friend-page",
-			"INVITE-FRIEND-EVENT":"invite-friend-event",
+			"INVITE-FRIEND":"invite-friend",
 			"COMMENT":"comment",
 			"STOP":"stop",
 			"OPTION":"option"
@@ -130,19 +116,11 @@ function genericOnClick(info, tab) {
 		]);
 		updateNumberOfUsed();
   		break;
-  	case CONSTANT["FACEBOOK"]["MENUS"]["INVITE-FRIEND-PAGE"]:
+	case CONSTANT["FACEBOOK"]["MENUS"]["INVITE-FRIEND"]:
   		executeScripts(null, [ 
 		    { file : "libs/jquery.js" }, 
 		    { file : "scripts/utils.js" },
-		    { file : "scripts/invite-friend-page.js" }
-		]);
-		updateNumberOfUsed();
-		break;
-	case CONSTANT["FACEBOOK"]["MENUS"]["INVITE-FRIEND-EVENT"]:
-  		executeScripts(null, [ 
-		    { file : "libs/jquery.js" }, 
-		    { file : "scripts/utils.js" },
-		    { file : "scripts/invite-friend-event.js" }
+		    { file : "scripts/invite-friend.js" }
 		]);
 		updateNumberOfUsed();
   		break;
@@ -191,11 +169,10 @@ function createContextMenus(){
 	chrome.contextMenus.onClicked.addListener(genericOnClick);
 
 	// Create a parent item and two children.
-	chrome.contextMenus.create({"id":CONSTANT["FACEBOOK"]["MENUS"]["CONFIRM-FRIEND"],"title": "Confirm friend requests","parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
-	chrome.contextMenus.create({"id":CONSTANT["FACEBOOK"]["MENUS"]["REQUEST-FRIEND"],"title": "Send friend requests","parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
+	chrome.contextMenus.create({"id":CONSTANT["FACEBOOK"]["MENUS"]["CONFIRM-FRIEND"],"title": "Accept Friends","parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
+	chrome.contextMenus.create({"id":CONSTANT["FACEBOOK"]["MENUS"]["REQUEST-FRIEND"],"title": "Add Friends","parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
 	chrome.contextMenus.create({"id":"separator1",type:'separator',"parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
-	chrome.contextMenus.create({"id":CONSTANT["FACEBOOK"]["MENUS"]["INVITE-FRIEND-PAGE"],"title": "Invite friend on Page","parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
-	chrome.contextMenus.create({"id":CONSTANT["FACEBOOK"]["MENUS"]["INVITE-FRIEND-EVENT"],"title": "Invite friend on Event","parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
+	chrome.contextMenus.create({"id":CONSTANT["FACEBOOK"]["MENUS"]["INVITE-FRIEND"],"title": "Invite Friends","parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
 	chrome.contextMenus.create({"id":"separator2",type:'separator',"parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
 	chrome.contextMenus.create({"id":CONSTANT["FACEBOOK"]["MENUS"]["LIKE-ALL"],"title": "Like all","parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
 	chrome.contextMenus.create({"id":CONSTANT["FACEBOOK"]["MENUS"]["LIKE-POST"],"title": "Like post","parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
