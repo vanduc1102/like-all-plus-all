@@ -1,4 +1,4 @@
-var DEBUG = true;
+var DEBUG = false;
 var CLICK_BUTTON = true;
 var LOGGER_CATEGORY;
 function LOGGER(p){
@@ -19,7 +19,9 @@ function clickOnButton(button, time, number){
 		number ++;
 		LOGGER("button clicked");		
 		if(CLICK_BUTTON){
-			button.click();
+			if(isVisbile(button)){
+				button.click();
+			}
 		}		
 		sendNumberToActionButton(number);
 	    d.resolve(number);
@@ -267,10 +269,10 @@ function getFirstElement(cssSelector){
 
 function getAllVisible(elements){
 	var visibleElements = elements.filter(function(index){
-		return $(this).is(":visible");
+		return isVisbile(this);
 	});
 	return visibleElements;
 }
 function isVisbile(element){
-	return element.is(":visible");
+	return $(element).is(":visible");
 }

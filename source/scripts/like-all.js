@@ -21,7 +21,7 @@ function main(scrollTimes, timerPerClick){
 		var moreCommentSelecor = "a[role='button'][class='UFIPagerLink']";
 		loadMoreByElement(moreCommentSelecor, MAX_LOAD_MORE_COMMENT).then(function(){
 			LOGGER('Done load more by click on button');
-			var buttons = $("a[role='button'][aria-pressed='false'],a[role='button'][data-ft='{\"tn\":\">\"}']");
+			var buttons = $("a[role='button'][aria-pressed='false'],a[role='button'][data-ft='{\"tn\":\">\"}'],button.PageLikeButton");
 			LOGGER('Number of buttons '+ buttons.length);	
 			clickButtonListOneByOne(buttons,timerPerClick,0).then(function(done){
 				sendNumberToActionButton(0);

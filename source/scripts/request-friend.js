@@ -14,14 +14,12 @@ chrome.storage.sync.get({
 });
 
 function main(scrollTimes, timerPerClick){
+	//debugger;
 	LOGGER('scrollTimes '+ scrollTimes + " ; timerPerClick : "+ timerPerClick);
 	if(checkLoadMoreAble()){
 		loadMoreByScroll(null,scrollTimes).then(function(response){
 			LOGGER('Done load more page');	
-			var buttons = $("li .FriendRequestAdd").filter(function(index){
-				var btn = $(this);
-				return !btn.hasClass('hidden_elem') && btn.is(":visible");
-			});
+			var buttons = $("li .FriendRequestAdd");
 			LOGGER('Number of buttons '+ buttons.length);	
 			clickButtonListOneByOne(buttons,timerPerClick,0).then(function(done){
 				sendNumberToActionButton(0);
@@ -30,38 +28,31 @@ function main(scrollTimes, timerPerClick){
 	}else if(isFriendsOfFriend()){
 		loadMoreByScroll(null,scrollTimes).then(function(response){
 			LOGGER('isFriendsOfFriend Done load more page');	
-			var buttons = getAllVisible($("button.FriendRequestAdd.addButton"));
+			var buttons = $("button.FriendRequestAdd.addButton");
 			LOGGER('isFriendsOfFriend Number of buttons '+ buttons.length);	
 			clickButtonListOneByOne(buttons,timerPerClick,0).then(function(done){
 				sendNumberToActionButton(0);
 			});	
 		});
-	}else{
-		var dialogBox = $("div[role='dialog'] ul[id*='reaction_profile_browser'").filter(function(index){
-			return $(this).is(":visible");
-		});
-		if(dialogBox.length > 0 ){
-			var buttons = dialogBox.find(".FriendButton > button.FriendRequestAdd").filter(function(index){
-				var btn = $(this);
-				return !btn.hasClass('hidden_elem') && btn.is(":visible");
-			});
+	}else if(checkGroupMememer()){
+		var loadMoreSelector = "a[href*='/ajax/browser/list/group_members/']";
+		frLoadMoreByScrollWithSelectorCondition(loadMoreSelector, scrollTimes).then(function(response){
+			var buttons = $("button.FriendRequestAdd.addButton");
 			LOGGER('Number of buttons '+ buttons.length);
 			clickButtonListOneByOne(buttons,timerPerClick,0).then(function(response){
 				sendNumberToActionButton(0);
 				LOGGER("Finished find friend on Post");
 			});	
-		}else if(checkGroupMememer()){
-			var loadMoreSelector = "a[href*='/ajax/browser/list/group_members/']";
-			frLoadMoreByScrollWithSelectorCondition(loadMoreSelector).then(function(response){
-					var buttons = $("button.FriendRequestAdd.addButton").filter(function(index){
-						return  $(this).is(":visible");
-					});
-					LOGGER('Number of buttons '+ buttons.length);
-					clickButtonListOneByOne(buttons,TIME_PER_CLICK,0).then(function(response){
-						sendNumberToActionButton(0);
-						LOGGER("Finished find friend on Post");
-					});	
-			});
+		});
+	}else{
+		var dialogBox = $("div[role='dialog'] ul[id*='reaction_profile_browser'");
+		if(dialogBox.length > 0 ){
+			var buttons = dialogBox.find(".FriendButton > button.FriendRequestAdd");
+			LOGGER('Number of buttons '+ buttons.length);
+			clickButtonListOneByOne(buttons,timerPerClick,0).then(function(response){
+				sendNumberToActionButton(0);
+				LOGGER("Finished find friend on Post");
+			});	
 		}else{
 			var buttonCssSelector = 'div#rightCol div.clearfix.ego_unit button';
 			clickOnXpathButtonTill(buttonCssSelector,timerPerClick + 2000,100).then(function(response){
@@ -85,9 +76,9 @@ function checkGroupMememer(){
 	return (fullUrl.indexOf("members") > -1 && fullUrl.indexOf("groups") > -1);
 }
 
-function frLoadMoreByScrollWithSelectorCondition(selectorCondition){
+function frLoadMoreByScrollWithSelectorCondition(selectorCondition, scrollTimes){
 	var d = $.Deferred();
-	return frScrollToBottomConditionWrapper(d,1,selectorCondition);
+	return frScrollToBottomConditionWrapper(d,1,selectorCondition , scrollTimes);
 }
 
 function isFriendsOfFriend(){
@@ -95,8 +86,8 @@ function isFriendsOfFriend(){
 	return friendsLink.length > 0;
 }
 
-function frScrollToBottomConditionWrapper(d,times,conditionSelector){
-	if(times == 50){
+function frScrollToBottomConditionWrapper(d,times,conditionSelector , scrollTimes){
+	if((scrollTimes == times) || (times === 50)){
 		LOGGER("Stop scrollToBottomConditionWrapper, cause it reach the maximum.");
 		d.resolve();
 		return d.promise();
@@ -104,7 +95,7 @@ function frScrollToBottomConditionWrapper(d,times,conditionSelector){
 	LOGGER("Load more by click loadMoreElement  "+ times);
 	times ++;
 	frScrollToBottomCondition( conditionSelector).then(function(resolve){
-		frScrollToBottomConditionWrapper(d,times,conditionSelector);
+		frScrollToBottomConditionWrapper(d,times,conditionSelector , scrollTimes);
 	},function(reject){
 		d.resolve();
 	});
