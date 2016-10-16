@@ -1,4 +1,4 @@
-var DEBUG = false;
+var DEBUG = true;
 var CLICK_BUTTON = true;
 var LOGGER_CATEGORY;
 function LOGGER(p){
@@ -12,29 +12,32 @@ function LOGGER(p){
 	}
 }
 function clickOnButton(button, time, number){
-	var d = $.Deferred();
-	var rand = getRandom(1,1000) ;
-	setTimeout(function() {
-		// The root of everything
-		number ++;
-		LOGGER("button clicked");		
-		if(CLICK_BUTTON){
-			if(isVisbile(button)){
+	var d = $.Deferred();	
+	if(isVisbile(button)){
+		var rand = getRandom(1,1000) ;
+		setTimeout(function() {
+			// The root of everything
+			number ++;
+			LOGGER("button clicked : "+ number);		
+			if(CLICK_BUTTON){			
 				button.click();
-			}
-		}		
-		sendNumberToActionButton(number);
-	    d.resolve(number);
-	}, time + rand);
+			}		
+			sendNumberToActionButton(number);
+		    d.resolve(number);
+		}, time + rand);
+	}else{
+		d.resolve(number);
+	}
 	return d.promise();
 }
 
 function clickButtonListOneByOne(buttons, time, number) {
+	debugger;
   var d = $.Deferred();
   var promise = d.promise();
   $.each(buttons, function(index, button) {
-    promise = promise.then(function(response) {
-    	number ++;
+    promise = promise.then(function(number) {
+    	number = number === undefined ? 0 : number;
     	return clickOnButton(button, time, number);
     });
   });
@@ -46,8 +49,8 @@ function clickButtonListOneByOneWithCloseWarning(buttons, time, number , warning
   var d = $.Deferred();
   var promise = d.promise();
   $.each(buttons, function(index, button) {
-    promise = promise.then(function(response) {
-    	number ++;
+    promise = promise.then(function(number) {
+    	number = number === undefined ? 0 : number;
 		clickOnElementAndWait(warningButtonSelector);
     	return clickOnButton(button, time, number);
     });

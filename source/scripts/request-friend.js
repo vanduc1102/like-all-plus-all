@@ -1,4 +1,5 @@
 LOGGER('Send friend request');
+LOGGER_CATEGORY = "Add friends";
 chrome.storage.sync.get({
 	"google": "post",
 	"google_time":"1.0",

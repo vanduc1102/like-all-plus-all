@@ -1,3 +1,4 @@
+LOGGER_CATEGORY = "Accept friends";
 chrome.storage.sync.get({
 	"google": "post",
 	"google_time":"1.0",
@@ -12,7 +13,7 @@ chrome.storage.sync.get({
   	main(timerPerClick, scrollTimes);	
 });
 function main(timerPerClick, scrollTimes) {
-    LOGGER('Confirm friend request');
+    LOGGER('Accept friend request');
     if(checkLoadMoreAble()){
 	    loadMoreByElement('a[class~="uiMorePagerPrimary"][rel="async"]', 10).then(function(response) {
 	        LOGGER('Done load more page');
