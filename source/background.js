@@ -6,7 +6,8 @@ var urls = ['plus.google.com',
 	'instagram.com',
 	'linkedin.com',
 	'tumblr.com',
-	'incomeon.com'
+	'incomeon.com',
+	'youtube.com'
 ];
 var youtubeURL = "www.youtube.com/watch";
 var count = 0;
@@ -64,6 +65,10 @@ chrome.runtime.onInstalled.addListener(function(details) {
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	LOGGER('receive: ' + request.count + " from tab : " + sender.tab.id + " content script:" + sender.tab.url);
+	if(request.isAnalytic){
+		trackButton(request.buttonId);
+		return;
+	}
 	if (request.count || request.count == 0) {
 		count = request.count;
 		var tab = sender.tab;
@@ -99,6 +104,7 @@ function genericOnClick(info, tab) {
   		LOGGER("Context menus support Facebook only.");
   		return;
   }
+  trackButton(info.menuItemId);
   switch(info.menuItemId){
   	case CONSTANT["FACEBOOK"]["MENUS"]["CONFIRM-FRIEND"]:
   		executeScripts(null, [ 
@@ -328,3 +334,21 @@ function openOptionPage(){
 		url : "options.html"
 	}); 
 }
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-83786826-2']);
+_gaq.push(['_trackPageview']);
+
+
+(function() {
+   var ga = document.createElement('script');
+   ga.type = 'text/javascript'; 
+   ga.async = true;
+   // ga.src = 'https://ssl.google-analytics.com/u/ga_debug.js';
+   ga.src = 'https://ssl.google-analytics.com/ga.js';
+   var s = document.getElementsByTagName('script')[0]; 
+   s.parentNode.insertBefore(ga, s);
+})();
+
+function trackButton(id) {
+_gaq.push(['_trackEvent', id, 'clicked']);
+};

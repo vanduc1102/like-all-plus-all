@@ -1,4 +1,4 @@
-var DEBUG = true;
+var DEBUG = false;
 var CLICK_BUTTON = true;
 var LOGGER_CATEGORY;
 function LOGGER(p){
@@ -12,7 +12,8 @@ function LOGGER(p){
 	}
 }
 function clickOnButton(button, time, number){
-	var d = $.Deferred();	
+	var d = $.Deferred();
+	// debugger;	
 	if(isVisbile(button)){
 		var rand = getRandom(1,1000) ;
 		setTimeout(function() {
@@ -32,7 +33,6 @@ function clickOnButton(button, time, number){
 }
 
 function clickButtonListOneByOne(buttons, time, number) {
-	debugger;
   var d = $.Deferred();
   var promise = d.promise();
   $.each(buttons, function(index, button) {
@@ -193,8 +193,9 @@ function scrollToBottomCondition(scrollbarSelector, conditionSelector){
 		var element = getFirstElement(scrollbarSelector);
 		if(!element){
 			d.reject();
-		}
-	    element.scrollTop = element.scrollHeight - element.clientHeight;
+		}else{
+	    	element.scrollTop = element.scrollHeight - element.clientHeight;
+	    }
 	}else{
 		window.scrollTo(0,document.body.scrollHeight);
 	}
@@ -223,6 +224,27 @@ function openPage(url){
 	}, 4000 +  getRandom(1,1000));
 	return d.promise();
 }
+function waitForElementToDisplay(selector){
+	var d = $.Deferred();
+	waitForElementToDisplayPromise(selector, d).then(function(response){
+		d.resolve();
+	});
+	return d.promise();
+}
+function waitForElementToDisplayPromise(selector, d) {	
+    if($('form[action*="ajax/pages/invite/"]').is(":visible")) {
+    	LOGGER("Finished waiting for selector appear : "+ selector);
+        d.resolve();
+        return d.promise();
+    }else{
+	    setTimeout(function() {
+	    	LOGGER("Waiting for selector appear : "+ selector);
+	        waitForElementToDisplayPromise(selector, d);
+	    }, 500);
+    }
+    return d.promise();    
+}
+
 function getFullUrl(){
 	return window.location.href;
 }

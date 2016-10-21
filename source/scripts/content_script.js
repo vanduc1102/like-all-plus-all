@@ -15,6 +15,7 @@ LOGGER('Content script running........... : '+urlOrigin);
 			var time = parseFloat(cfgData['twitter_time'])*1000;
 			var scroll = Number(cfgData['numberOfScroll']) + 1;
 			executeIncomeonLike(time,  scroll);
+			sendAnalytic("incomeon");
 			return;
 		}
 		if(cfgData['numberOfScroll'] > 1 && isScrollable()){
@@ -95,14 +96,17 @@ LOGGER('Content script running........... : '+urlOrigin);
 						return !$(this).hasClass("UFIReactionLink");
 					});
 					LOGGER('Like all post : '+sad_posts.length);
+					sendAnalytic("facebook-post");
 					break;
 				case 'comment':
 					sad_posts = $("a[data-testid='fb-ufi-likelink'][aria-pressed='false'],a[class='UFIReactionLink'][data-ft='{\"tn\":\">\"}']");
 					LOGGER('Like all comment : '+sad_posts.length);
+					sendAnalytic("facebook-comment");
 					break;
 				case 'both':
 					sad_posts = $("a[role='button'][aria-pressed='false'],a[role='button'][data-ft='{\"tn\":\">\"}']");
 					LOGGER('Facebook all post and comment : '+sad_posts.length);
+					sendAnalytic("facebook-both");
 					break;
 				default:
 					break;
@@ -114,9 +118,11 @@ LOGGER('Content script running........... : '+urlOrigin);
 			sad_posts = $("button[class^='ProfileTweet-actionButton js-actionButton js-actionFavorite']").filter(function( index ) {
 				return $( this ).css("display") == 'inline-block' ;
 			});
+			sendAnalytic("twitter");
 		}
 
 		if(isInstagram()){
+			sendAnalytic("instagram");
 			time = parseFloat(cfgData['twitter_time'])*1000;
 			sad_posts = $("a[role='button']").filter(function( index ) {
 				var likeElement =  $( this ).find("span");
@@ -126,6 +132,7 @@ LOGGER('Content script running........... : '+urlOrigin);
 		}
 
 		if(isLinkedin()){
+			sendAnalytic("linkedin");
 			time = parseFloat(cfgData['twitter_time'])*1000;
 			if( isLinkedinCompany() ){
 				sad_posts = $("a.like");
@@ -138,10 +145,19 @@ LOGGER('Content script running........... : '+urlOrigin);
 		}
 
 		if(isTumblr()){
+			sendAnalytic("tumblr");
 			time = parseFloat(cfgData['twitter_time'])*1000;
 			sad_posts = $("div.post-control-icon.like").filter(function( index ) {
 				var classAttr =  $( this ).attr('class');
 				return classAttr.indexOf("liked") < 0;
+			});
+		}
+
+		if(isYoutube()){
+			sendAnalytic("like_youtube");
+			time = parseFloat(cfgData['twitter_time'])*1000;
+			sad_posts = $("button.yt-uix-button.sprite-like").filter(function( index ) {
+				return !$(this).attr('data-action-on');
 			});
 		}
 		
@@ -266,6 +282,12 @@ function sendNumberToActionButton(number){
 		//console.log(response);
 	});  
 }
+function sendAnalytic(buttonId){
+	chrome.runtime.sendMessage({isAnalytic: true,
+								buttonId: buttonId}, function(response) {
+		//console.log(response);
+	});  
+}
 
 function isFacebook(){
 	return urlOrigin.indexOf('facebook') > -1;
@@ -281,6 +303,9 @@ function isTwitter(){
 
 function isInstagram(){
 	return urlOrigin.indexOf('instagram') > -1;
+}
+function isYoutube(){
+	return urlOrigin.indexOf('youtube.com') > -1;
 }
 function isLinkedin(){
 	return urlOrigin.indexOf('linkedin') > -1;

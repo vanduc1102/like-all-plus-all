@@ -5,6 +5,7 @@ var ytTimeout = setTimeout(function(){
 		clearTimeout(ytTimeout);
 	}else{
 		LOGGER("Button is not pressed, try to press after 3 second.");
+		sendAnalytic("youtube-autolike");
 		button.click();
 	}
 }, 3000);

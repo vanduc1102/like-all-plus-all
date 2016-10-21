@@ -9,12 +9,17 @@ chrome.storage.sync.get({
   	LOGGER(cfgData);
   	var scrollTimes = Number(cfgData["numberOfScroll"]); 
   	var timerPerClick = Number(cfgData["facebook_time"]) * 1000 * 2;
-  	inviteFriendEvent(timerPerClick, scrollTimes);	
-  	inviteFriendPage(timerPerClick, scrollTimes);
+  	if(isEventPage()){
+  		inviteFriendEvent(timerPerClick, scrollTimes);
+  	}else if(isFanPage()){
+  		inviteFriendPage(timerPerClick, scrollTimes);
+  	}else{
+  		alert("This function only work on Event or Page");
+  	}
 });
 function inviteFriendEvent(timerPerClick, scrollTimes){
 	LOGGER('Invite friend request to Event page');
-	if(checkLoadMoreAble()){
+	if(checkLoadMoreAbleEventPage()){
 		var scrollSelector = "div.uiScrollableAreaGripper";
 		var buttonSelector = "a[aria-checked=\"false\"][role=\"checkbox\"]";
 		if(checkFormIsOpen()){
@@ -56,26 +61,35 @@ function inviteFriendEvent(timerPerClick, scrollTimes){
 	}
 }
 function inviteFriendPage(timerPerClick, scrollTimes){
-	LOGGER('Invite friend request');	
-	if(checkLoadMoreAble()){
-		var scrollSelector = ".fbProfileBrowserResult.scrollable.hideSummary";
-		var buttonSelector = "a.uiButton";
-		loadMoreByScrollWithSelectorCondition(scrollSelector,buttonSelector).then(function(response){
-			LOGGER('Done load more page');	
-			var buttons = $(buttonSelector).filter(function(index){
-				return $(this).is(":visible");
-			});
-			LOGGER('Number of buttons '+ buttons.length);	
-			clickButtonListOneByOne(buttons,timerPerClick,0).then(function(done){
-				sendNumberToActionButton(0);
-			});	
-		});
-	}else{
-		alert("Please goto your fanpage, and open invite friend list");
-	}
+	LOGGER('Invite friend request');
+	//debugger;	
+	var inviteFriendButton = document.querySelectorAll("a[role='button'][href^='/ajax/choose/?type=fan_page&'] > div")[0];
+	var POPUP_SELECTOR = 'input.inputtext.autofocus.textInput';
+	clickOnButton(inviteFriendButton, 1000, -1).then(function(response){
+		waitForElementToDisplay(POPUP_SELECTOR).then(function(response){
+			setTimeout(function(){
+				if(  checkInviteOnPageDisplayed()){
+					var scrollSelector = ".fbProfileBrowserResult.scrollable.hideSummary";
+					var buttonSelector = "a.uiButton";
+					loadMoreByScrollWithSelectorCondition(scrollSelector,buttonSelector).then(function(response){
+						LOGGER('Done load more page');	
+						var buttons = $(buttonSelector).filter(function(index){
+							return $(this).is(":visible");
+						});
+						LOGGER('Number of buttons '+ buttons.length);	
+						clickButtonListOneByOne(buttons,timerPerClick,0).then(function(done){
+							sendNumberToActionButton(0);
+						});	
+					});
+				}else{
+					alert("Please open your fan page.");
+				}
+			},5000);
+		});	
+	});	
 };
 
-function checkLoadMoreAble() {
+function checkInviteOnPageDisplayed() {
  	var form = $('form[action*="ajax/pages/invite/"]');
  	return form.is(":visible");
 }
@@ -93,11 +107,17 @@ function checkFormIsOpen(){
 	return formSelectorObject.length > 0 && formSelectorObject.is(":visible");
 }
 
-function checkLoadMoreAble() {
-	var fullUrl = getFullUrl();
-	if(fullUrl.indexOf("www.facebook.com/events/") > -1){
+function checkLoadMoreAbleEventPage() {
+	if(getFullUrl().indexOf("www.facebook.com/events/") > -1){
 		return true;
 	}
+	return false;
+}
+function isEventPage(){
+	return getFullUrl().indexOf("/events/") > -1;
+}
+function isFanPage(){
+	return $("#pages_manager_top_bar_container").length > 0;
 }
 function inviteLoadMoreByScrollWithSelectorCondition(parentElement,scrollSelector,selectorCondition){
 	var d = $.Deferred();
