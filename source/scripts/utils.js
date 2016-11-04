@@ -1,4 +1,4 @@
-var DEBUG = false;
+var DEBUG = true;
 var CLICK_BUTTON = true;
 var LOGGER_CATEGORY;
 function LOGGER(p){
@@ -300,4 +300,11 @@ function getAllVisible(elements){
 }
 function isVisbile(element){
 	return $(element).is(":visible");
+}
+
+function sendAnalytic(buttonId){
+	chrome.runtime.sendMessage({isAnalytic: true,
+								buttonId: buttonId}, function(response) {
+		//console.log(response);
+	});  
 }

@@ -76,12 +76,15 @@ LOGGER('Content script running........... : '+urlOrigin);
 			switch(cfgData['google']){
 				case 'post':
 					sad_posts = $("div[role='button'][aria-pressed='false']");
+					sendAnalytic("googleplus-post");
 					break;
 				case 'comment':
 					sad_posts = $("button[role='button'][aria-pressed='false'][jscontroller]");
+					sendAnalytic("googleplus-comment");
 					break;
 				case 'both':
 					sad_posts = $("div[id^=po-][aria-pressed='false'],button[role='button'][aria-pressed='false'][jscontroller]");
+					sendAnalytic("googleplus-both");
 					break;
 				default:
 					break;
@@ -279,12 +282,6 @@ LOGGER('Content script running........... : '+urlOrigin);
 
 function sendNumberToActionButton(number){
 	chrome.runtime.sendMessage({count: number}, function(response) {
-		//console.log(response);
-	});  
-}
-function sendAnalytic(buttonId){
-	chrome.runtime.sendMessage({isAnalytic: true,
-								buttonId: buttonId}, function(response) {
 		//console.log(response);
 	});  
 }
