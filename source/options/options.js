@@ -37,10 +37,11 @@ function updateLinkAnchorTag(anchorSelector){
 		var facebook_time = document.getElementById('facebook-time').value;
 		var twitter_time = document.getElementById('twitter-time').value;
 		var numberOfScroll = document.getElementById('auto-scroll-times').value;
-		var youtubeCheck = "false";
-		if(document.querySelector('.youtube-like:checked')){
-			youtubeCheck = document.querySelector('.youtube-like:checked').value;			
-		}
+		var youtubeCheck = getCheckBoxValue('youtube-like'); 
+		var googleAnalytic = getCheckBoxValue('google-analytic');
+		var allowAutoLike = getCheckBoxValue('allow-auto-like');
+		var autoLikeTime = document.getElementById('auto-like-time').value;
+		
 		LOGGER(youtubeCheck);
 		chrome.storage.sync.set({
 			"google": google,
@@ -49,7 +50,10 @@ function updateLinkAnchorTag(anchorSelector){
 			"facebook_time":facebook_time,
 			"twitter_time":twitter_time,
 			"numberOfScroll":numberOfScroll,
-			"youtube_like":youtubeCheck
+			"youtube_like":youtubeCheck,
+			'google_analytic':googleAnalytic,
+			'allow-auto-like':allowAutoLike,
+			'auto-like-time':autoLikeTime
 		}, function() {
 			// Update status to let user know options were saved.
 			var saveStatus =$('#save-success');
@@ -71,7 +75,10 @@ function updateLinkAnchorTag(anchorSelector){
 			"twitter_time":0.8,
 			"numberOfScroll":0,
 			"youtube_like":false,
-			"count_number":1
+			"count_number":1,
+			'google_analytic':true,
+			'allow-auto-like':false,
+			'auto-like-time':10
 		}, function(item) {
 			document.getElementById('google').value =item['google'];
 			document.getElementById('google-time').value =item['google_time'];
@@ -79,15 +86,29 @@ function updateLinkAnchorTag(anchorSelector){
 			document.getElementById('facebook-time').value = item['facebook_time'];
 			document.getElementById('twitter-time').value = item['twitter_time'];
 			document.getElementById('auto-scroll-times').value = item['numberOfScroll'];
-			if(item['youtube_like'] == 'true'){
-				document.getElementById('youtube-like').checked = true;
-			}else{
-				document.getElementById('youtube-like').checked = false;
-			}
+			document.getElementById('auto-like-time').value = item['auto-like-time'];
+			setCheckBoxValue( "youtube_like",item['youtube_like']);
+			setCheckBoxValue( "google-analytic",item['google-analytic']);
+			setCheckBoxValue( "allow-auto-like",item['allow-auto-like']);
 			updateNumber(item["count_number"]);
 			// console.log(item);
 		});
 	});
+	function setCheckBoxValue(checkBoxId , value){
+		if(value == 'true'){
+			document.getElementById(checkBoxId).checked = true;
+		}else{
+			document.getElementById(checkBoxId).checked = false;
+		}
+	}
+	function getCheckBoxValue(checkboxClass){
+		var value = "false";
+		var cssSelector = "."+checkboxClass+':checked';
+		if(document.querySelector(cssSelector)){
+			value = document.querySelector(cssSelector).value;			
+		}
+		return value;
+	}
 	// Update the slider UI and maybe plead with the user not to pay $0
 	function onSliderChange() {
 	    var zero = ($("#slider").val() == 0);

@@ -22,7 +22,11 @@ var messages={
 		"msgYoutube":"Youtube",
 		"msgYoutubeAutoLike":"Tự động thích Youtube video",
 		"msgCountNumber":"Bạn đã sử dụng nút Like-all {0} lần.",
-		"msgPleaseReview":"Hãy đánh giá giúp tôi."
+		"msgPleaseReview":"Hãy đánh giá giúp tôi.",
+		"msgGoogleAnalyticAllow":"Đồng ý gửi dữ liệu thống kê đến Google",
+		"msgGoogleAnalytic":"Dữ liệu thống kê",
+		"msgAutoLike":"Tự động thích",
+		"msgAutoLikeCheckBox":"Cho phép tự động thích"
 	},
 	'en':{
 		'btnSave':'Save',
@@ -47,7 +51,12 @@ var messages={
 		"msgYoutube":"Youtube",
 		"msgYoutubeAutoLike":"Auto like youtube",
 		"msgCountNumber":"You have clicked on Like-all button {0} times.",
-		"msgPleaseReview":"Please give me a review"
+		"msgPleaseReview":"Please give me a review",
+		"msgGoogleAnalyticAllow":"Allow send data to Google Analytics",
+		"msgGoogleAnalytic":"Goole Analytics",
+		"msgAutoLike":"Auto Like",
+		"msgAutoLikeCheckBox":"Allow auto like"
+
 	},
 	'fr':{
 		'btnSave':'Enregistrer',

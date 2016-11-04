@@ -308,3 +308,25 @@ function sendAnalytic(buttonId){
 		//console.log(response);
 	});  
 }
+
+function setStorageSync(object, callback){
+	if(!object || !(object instanceof 'object')){
+		console.log("Incorrect object key");
+		callback(null);
+		return;
+	}
+	chrome.storage.sync.set(object, function() {
+		callback(true);		
+	});
+}
+
+function getStorageSync(object, callback){
+	if(!object || !(object instanceof 'object')){
+		console.log("Incorrect object key");
+		callback(null);
+		return;
+	}
+	chrome.storage.sync.get(object, function(storagedObject) {
+		callback(storagedObject);		
+	});
+}
