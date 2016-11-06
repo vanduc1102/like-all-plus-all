@@ -11,12 +11,14 @@ var urls = ['plus.google.com',
 ];
 var youtubeURL = "www.youtube.com/watch";
 var count = 0;
+var currentTab = null;
 chrome.browserAction.onClicked.addListener(function(tab) {
 	try {
 		executeScripts(null, [ 
 	        { file : "libs/jquery.js" }, 
 	        { file : "scripts/utils.js" },
-	        { file : "scripts/content_script.js" }
+	        { file : "scripts/content_script.js" },
+	        { file : "scripts/on-button-action-click.js" }	        
 	    ]);
 		setBadgeText(tab,'');
 		disableButton(tab);
@@ -27,11 +29,13 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 });
 
 chrome.tabs.onCreated.addListener(function(tab) {
+	currentTab = tab;
 	LOGGER('chrome.tabs.onCreated.addListener tab.id ' + tab.id + ' ; tab.url ' + tab.url);
 	disableButton(tab);
 });
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+	currentTab = tab;
 	LOGGER('chrome.tabs.onUpdated.addListener tab.id ' + tab.id + ' ; tab.url ' + tab.url);
 	try {
 		if (checkEnable(tab.url)) {
@@ -219,6 +223,15 @@ function checkEnable(url) {
 	return false;
 }
 
+function checkTabIsEnable(){
+	if(!currentTab || !currentTab.url){
+		return false;
+	}
+	console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAA ",currentTab);
+	var url = currentTab.url;
+	return checkEnable(url);
+
+}
 function enableButtonIfNoneText(tab){
 	chrome.browserAction.getBadgeText({"tabId" : tab.id}, function (text){
 		LOGGER("enableButtonIfNoneText : "+text);
@@ -334,12 +347,23 @@ function openOptionPage(){
 		url : "options.html"
 	}); 
 }
-getStorageNumber('isAllowGoogleAnalytic',function(isAllow){
-	registerGoogleAnalytic(isAllow);
+
+getStorageSync({
+	'google_analytic':true,
+	'allow-auto-like':false,
+	'auto-like-time':10
+}, function(object){
+	LOGGER("get system storage : ", object);
+	registerGoogleAnalytic(object['google_analytic']);
+	handleIntervalTask(object['allow-auto-like'],object['auto-like-time']);
 });
 
 function registerGoogleAnalytic(isAllow){
-	if(isAllow){
+	LOGGER("isAllowGoogleAnalytic : ",isAllow);
+	if(checkTabIsEnable()){
+		return;
+	}
+	if(isAllow == 'true'){
 		var _gaq = _gaq || [];
 		_gaq.push(['_setAccount', 'UA-83786826-2']);
 		_gaq.push(['_trackPageview']);
@@ -351,6 +375,25 @@ function registerGoogleAnalytic(isAllow){
 		ga.src = 'https://ssl.google-analytics.com/ga.js';
 		var s = document.getElementsByTagName('script')[0]; 
 		s.parentNode.insertBefore(ga, s);
+	}
+}
+
+function handleIntervalTask(isEnable, intervalTime){
+	var IntervalTask;
+	if(isEnable == 'true' && !IntervalTask && checkTabIsEnable()){
+		IntervalTask = setInterval(function(){
+			LOGGER("IntervalTask Execute after "+ intervalTime + " seconds.");
+			executeScripts(null, [ 
+		        { file : "libs/jquery.js" }, 
+		        { file : "scripts/utils.js" },
+		        { file : "scripts/content_script.js" },
+		        { file : "scripts/on-interval-execute.js" }	        
+		    ]);
+		},intervalTime * 1000);
+	}else{
+		if(isEnable == 'false'){
+			clearInterval(IntervalTask);
+		}
 	}
 }
 

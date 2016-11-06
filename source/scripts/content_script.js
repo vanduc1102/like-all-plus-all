@@ -1,8 +1,8 @@
 var urlOrigin=window.location.origin;
 var fullUrl = window.location.href;
 LOGGER('Content script running........... : '+urlOrigin);
-(function(){
-	chrome.storage.sync.get({
+function contentScriptMainExecute(isClickedActionBtn){
+	getStorageSync({
 		"google": "post",
 		"google_time":"1.0",
 		"facebook": "post",
@@ -18,7 +18,7 @@ LOGGER('Content script running........... : '+urlOrigin);
 			sendAnalytic("incomeon");
 			return;
 		}
-		if(cfgData['numberOfScroll'] > 1 && isScrollable()){
+		if(cfgData['numberOfScroll'] > 1 && isScrollable() && isClickedActionBtn){
 			autoScrollToBottom(cfgData);
 		}else{
 			if(isFacebook() && cfgData['facebook'] == 'both'){
@@ -176,13 +176,7 @@ LOGGER('Content script running........... : '+urlOrigin);
 
 		
 
-		function createHappyButtons(sad_posts){
-			var array = []
-			for (var i = 0; i < sad_posts.length; i++) {
-				array.push(sad_posts[i]);
-			}
-			return array;
-		}
+		
 		
 		LOGGER(time);
 		
@@ -197,88 +191,98 @@ LOGGER('Content script running........... : '+urlOrigin);
 			sendAllInvitation(0);
 		}
 
-		function sendAllInvitation (number) {
-			var d = $.Deferred();
-			sendAllInvitationOnPage(number).then(function(currentNumber) {
-			    loadNewPageAndSendInvitation(d,currentNumber);
-			});
-			d.done(function(done) {
-			    sendNumberToActionButton(0);
-			});
-		}
-
-		function loadNewPageAndSendInvitation(defered,number) {
-		  	loadNextPage(number).then(function(oldPageNumber) {
-			    sendAllInvitationOnPage(oldPageNumber).then(function(newPageNumber) {
-			    	loadNewPageAndSendInvitation(defered,newPageNumber);
-			    });
-			}, function(rejected) {
-				defered.resolve();
-			});
-		  return defered.promise();
-		}
-
-		function sendAllInvitationOnPage(number){
-			var defered = $.Deferred();			
-			var happyButtons = getAllInviteButtonOnPage();
-			clickButtonListOneByOne(happyButtons,2000,number).then(function(number){
-				defered.resolve(number);
-			});
-			return defered.promise();
-		}
-
-		function getAllInviteButtonOnPage(){
-			var originButtons =  $('a[href^="/people/invite?"]').filter(function(index){
-				var classAttr =  $( this ).attr('class');
-				return classAttr && classAttr.indexOf("invite-sent") < 0;
-			});
-			return createHappyButtons(originButtons);
-		}
-
-		function happyFn(happy, intervalTime) {
-			if (happy.length <= 0) {
-				return;
-			}
-			
-		    if(isGooglePlus() && isNewGooglePlus()){
-		    	triggerClickEvent(happy[0]);
-		    }else{
-		    	// The root of everything.
-		    	LOGGER("sent a like "+happy.length);
-				if(CLICK_BUTTON){
-					happy[0].click();
-				}
-		    }
-
-			if(happy.length > 0){
-				//console.log('Send request : '+ (happy.length - 1));
-				sendNumberToActionButton(happy.length - 1);
-			}
-
-			window.setTimeout(function() {
-				happyFn(happy.splice(1), intervalTime);
-			}, intervalTime + getRandom(1,1000));
-		}
 		
-		// Make connection in LinkedIn
-		function makeConnection(intervalTime, count){
-			count++;
-			
-			var connectionElement = $("ul > li:first-child button.bt-request-buffed");
-			if(connectionElement.length > 0){
-				connectionElement.click();
-				sendNumberToActionButton(count);
-			}else{
-				sendNumberToActionButton(0);
-				return;
-			}
-			
-			window.setTimeout(function() {
-				makeConnection( intervalTime , count);
-			}, intervalTime +  getRandom(1,1000));
-		}		
 	};
-})();
+}
+
+function createHappyButtons(sad_posts){
+	var array = []
+	for (var i = 0; i < sad_posts.length; i++) {
+		array.push(sad_posts[i]);
+	}
+	return array;
+}
+
+function sendAllInvitation (number) {
+	var d = $.Deferred();
+	sendAllInvitationOnPage(number).then(function(currentNumber) {
+	    loadNewPageAndSendInvitation(d,currentNumber);
+	});
+	d.done(function(done) {
+	    sendNumberToActionButton(0);
+	});
+}
+
+function loadNewPageAndSendInvitation(defered,number) {
+  	loadNextPage(number).then(function(oldPageNumber) {
+	    sendAllInvitationOnPage(oldPageNumber).then(function(newPageNumber) {
+	    	loadNewPageAndSendInvitation(defered,newPageNumber);
+	    });
+	}, function(rejected) {
+		defered.resolve();
+	});
+  return defered.promise();
+}
+
+function sendAllInvitationOnPage(number){
+	var defered = $.Deferred();			
+	var happyButtons = getAllInviteButtonOnPage();
+	clickButtonListOneByOne(happyButtons,2000,number).then(function(number){
+		defered.resolve(number);
+	});
+	return defered.promise();
+}
+
+function getAllInviteButtonOnPage(){
+	var originButtons =  $('a[href^="/people/invite?"]').filter(function(index){
+		var classAttr =  $( this ).attr('class');
+		return classAttr && classAttr.indexOf("invite-sent") < 0;
+	});
+	return createHappyButtons(originButtons);
+}
+
+function happyFn(happy, intervalTime) {
+	if (happy.length <= 0) {
+		return;
+	}
+	
+    if(isGooglePlus() && isNewGooglePlus()){
+    	triggerClickEvent(happy[0]);
+    }else{
+    	// The root of everything.
+    	LOGGER("sent a like "+happy.length);
+		if(CLICK_BUTTON){
+			happy[0].click();
+		}
+    }
+
+	if(happy.length > 0){
+		//console.log('Send request : '+ (happy.length - 1));
+		sendNumberToActionButton(happy.length - 1);
+	}
+
+	window.setTimeout(function() {
+		happyFn(happy.splice(1), intervalTime);
+	}, intervalTime + getRandom(1,1000));
+}
+
+// Make connection in LinkedIn
+function makeConnection(intervalTime, count){
+	count++;
+	
+	var connectionElement = $("ul > li:first-child button.bt-request-buffed");
+	if(connectionElement.length > 0){
+		connectionElement.click();
+		sendNumberToActionButton(count);
+	}else{
+		sendNumberToActionButton(0);
+		return;
+	}
+	
+	window.setTimeout(function() {
+		makeConnection( intervalTime , count);
+	}, intervalTime +  getRandom(1,1000));
+}		
 
 function sendNumberToActionButton(number){
 	chrome.runtime.sendMessage({count: number}, function(response) {

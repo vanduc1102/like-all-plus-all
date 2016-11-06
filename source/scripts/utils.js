@@ -1,12 +1,13 @@
 var DEBUG = true;
-var CLICK_BUTTON = true;
+var CLICK_BUTTON = false;
 var LOGGER_CATEGORY;
-function LOGGER(p){
+function LOGGER(p , arguments ){
 	if(DEBUG){
+		var  jsonArguments = arguments ? JSON.stringify(arguments) : "";
 		if(LOGGER_CATEGORY){
-			console.log(LOGGER_CATEGORY + " - ",p);
+			console.log(LOGGER_CATEGORY + " - ",p,jsonArguments);
 		}else{
-			console.log(p);
+			console.log(p,jsonArguments);
 		}
 		
 	}
@@ -310,7 +311,7 @@ function sendAnalytic(buttonId){
 }
 
 function setStorageSync(object, callback){
-	if(!object || !(object instanceof 'object')){
+	if(!object || !(object instanceof Object )){
 		console.log("Incorrect object key");
 		callback(null);
 		return;
@@ -319,9 +320,8 @@ function setStorageSync(object, callback){
 		callback(true);		
 	});
 }
-
 function getStorageSync(object, callback){
-	if(!object || !(object instanceof 'object')){
+	if(!object || !(object instanceof Object )){
 		console.log("Incorrect object key");
 		callback(null);
 		return;
