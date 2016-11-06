@@ -78,7 +78,7 @@ function updateLinkAnchorTag(anchorSelector){
 			"count_number":1,
 			'google_analytic':true,
 			'allow-auto-like':false,
-			'auto-like-time':10
+			'auto-like-time':60
 		}, function(item) {
 			document.getElementById('google').value =item['google'];
 			document.getElementById('google-time').value =item['google_time'];
@@ -87,19 +87,15 @@ function updateLinkAnchorTag(anchorSelector){
 			document.getElementById('twitter-time').value = item['twitter_time'];
 			document.getElementById('auto-scroll-times').value = item['numberOfScroll'];
 			document.getElementById('auto-like-time').value = item['auto-like-time'];
-			setCheckBoxValue( "youtube_like",item['youtube_like']);
-			setCheckBoxValue( "google-analytic",item['google-analytic']);
+			setCheckBoxValue( "youtube-like",item['youtube_like']);
+			setCheckBoxValue( "google-analytic",item['google_analytic']);
 			setCheckBoxValue( "allow-auto-like",item['allow-auto-like']);
 			updateNumber(item["count_number"]);
 			// console.log(item);
 		});
 	});
 	function setCheckBoxValue(checkBoxId , value){
-		if(value == 'true'){
-			document.getElementById(checkBoxId).checked = true;
-		}else{
-			document.getElementById(checkBoxId).checked = false;
-		}
+		document.getElementById(checkBoxId).checked = value;		
 	}
 	function getCheckBoxValue(checkboxClass){
 		var value = "false";
@@ -107,7 +103,7 @@ function updateLinkAnchorTag(anchorSelector){
 		if(document.querySelector(cssSelector)){
 			value = document.querySelector(cssSelector).value;			
 		}
-		return value;
+		return value === 'true';
 	}
 	// Update the slider UI and maybe plead with the user not to pay $0
 	function onSliderChange() {

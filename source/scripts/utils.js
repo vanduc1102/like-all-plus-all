@@ -1,5 +1,5 @@
 var DEBUG = true;
-var CLICK_BUTTON = false;
+var CLICK_BUTTON = true;
 var LOGGER_CATEGORY;
 function LOGGER(p , arguments ){
 	if(DEBUG){

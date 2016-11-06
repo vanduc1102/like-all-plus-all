@@ -12,6 +12,7 @@ var urls = ['plus.google.com',
 var youtubeURL = "www.youtube.com/watch";
 var count = 0;
 var currentTab = null;
+var _gaq;
 chrome.browserAction.onClicked.addListener(function(tab) {
 	try {
 		executeScripts(null, [ 
@@ -51,17 +52,17 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 chrome.runtime.onInstalled.addListener(function(details) {
 	LOGGER("on Installed");
 	chrome.storage.sync.get({
-		isOptionOpened : "false"
+		isOptionOpened : false
 	}, function(cfgData) {
 		LOGGER("Option is not opened yet!" + JSON.stringify(cfgData));
-		if (cfgData["isOptionOpened"] == "false") {
+		if (cfgData["isOptionOpened"]) {
 			LOGGER("Option tab is openning");
 			openOptionPage();
 		}
 	});
 	
 	chrome.storage.sync.set({
-		"isOptionOpened" : "true"
+		"isOptionOpened" : true
 	}, function() {
 		LOGGER("Option is openned, Dont open it again.");
 	});
@@ -227,7 +228,6 @@ function checkTabIsEnable(){
 	if(!currentTab || !currentTab.url){
 		return false;
 	}
-	console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAA ",currentTab);
 	var url = currentTab.url;
 	return checkEnable(url);
 
@@ -275,10 +275,10 @@ function isConnect(currentUrl){
 }
 function likeYoutubeVideo(url) {
 	chrome.storage.sync.get({
-		"youtube_like" : "false"
+		"youtube_like" : false
 	}, function(cfgData) {
 		LOGGER(cfgData);
-		if (cfgData['youtube_like'] == "true") {
+		if (cfgData['youtube_like']) {
 			if (url.indexOf(youtubeURL) > -1) {
 				LOGGER("You are in youtube watch page");
 				try {
@@ -358,13 +358,12 @@ getStorageSync({
 	handleIntervalTask(object['allow-auto-like'],object['auto-like-time']);
 });
 
+//registerGoogleAnalytic('true');
+
 function registerGoogleAnalytic(isAllow){
 	LOGGER("isAllowGoogleAnalytic : ",isAllow);
-	if(checkTabIsEnable()){
-		return;
-	}
-	if(isAllow == 'true'){
-		var _gaq = _gaq || [];
+	if(isAllow){
+		_gaq = _gaq || [];
 		_gaq.push(['_setAccount', 'UA-83786826-2']);
 		_gaq.push(['_trackPageview']);
 
@@ -380,7 +379,7 @@ function registerGoogleAnalytic(isAllow){
 
 function handleIntervalTask(isEnable, intervalTime){
 	var IntervalTask;
-	if(isEnable == 'true' && !IntervalTask && checkTabIsEnable()){
+	if(isEnable && !IntervalTask){
 		IntervalTask = setInterval(function(){
 			LOGGER("IntervalTask Execute after "+ intervalTime + " seconds.");
 			executeScripts(null, [ 
@@ -391,15 +390,17 @@ function handleIntervalTask(isEnable, intervalTime){
 		    ]);
 		},intervalTime * 1000);
 	}else{
-		if(isEnable == 'false'){
+		if(!isEnable){
 			clearInterval(IntervalTask);
 		}
 	}
 }
 
 function trackButton(id) {
-	getStorageNumber('isAllowGoogleAnalytic',function(isAllow){
-		if(isAllow && _gaq){
+	getStorageSync({
+		'google_analytic':true
+	},function(obj){
+		if(obj['google_analytic'] && _gaq){
 			_gaq.push(['_trackEvent', id, 'clicked']);
 		}
 	});	
