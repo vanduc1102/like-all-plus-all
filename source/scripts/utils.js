@@ -1,4 +1,4 @@
-var DEBUG = true;
+var DEBUG = false;
 var CLICK_BUTTON = true;
 var LOGGER_CATEGORY;
 function LOGGER(p , arguments ){

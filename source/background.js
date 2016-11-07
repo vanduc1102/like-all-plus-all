@@ -378,17 +378,18 @@ function registerGoogleAnalytic(isAllow){
 }
 
 function handleIntervalTask(isEnable, intervalTime){
+	var interValMinute = Number(intervalTime);
 	var IntervalTask;
 	if(isEnable && !IntervalTask){
 		IntervalTask = setInterval(function(){
-			LOGGER("IntervalTask Execute after "+ intervalTime + " seconds.");
+			LOGGER("IntervalTask Execute after "+ interValMinute + " seconds.");
 			executeScripts(null, [ 
 		        { file : "libs/jquery.js" }, 
 		        { file : "scripts/utils.js" },
 		        { file : "scripts/content_script.js" },
 		        { file : "scripts/on-interval-execute.js" }	        
 		    ]);
-		},intervalTime * 1000);
+		},interValMinute * 1000);
 	}else{
 		if(!isEnable){
 			clearInterval(IntervalTask);

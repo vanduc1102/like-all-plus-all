@@ -1,3 +1,3 @@
-LOGGER('STARTTTTTTTTTTTTTTTTTTTTTTTTTTT INTERVAL ');
+LOGGER('Starting interval task ...................');
 contentScriptMainExecute(false);
-trackButton("execute-auto-like");
+sendAnalytic("execute-auto-like");
