@@ -351,7 +351,7 @@ function openOptionPage(){
 getStorageSync({
 	'google_analytic':true,
 	'allow-auto-like':false,
-	'auto-like-time':10
+	'auto-like-time':30
 }, function(object){
 	LOGGER("get system storage : ", object);
 	registerGoogleAnalytic(object['google_analytic']);
