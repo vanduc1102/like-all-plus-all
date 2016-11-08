@@ -55,7 +55,7 @@ chrome.runtime.onInstalled.addListener(function(details) {
 		isOptionOpened : false
 	}, function(cfgData) {
 		LOGGER("Option is not opened yet!" + JSON.stringify(cfgData));
-		if (cfgData["isOptionOpened"]) {
+		if ( !cfgData["isOptionOpened"] ) {
 			LOGGER("Option tab is openning");
 			openOptionPage();
 		}
