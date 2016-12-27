@@ -25,10 +25,14 @@ function main(scrollTimes, timerPerClick){
 			var replyButtons = $("a[class='UFIReplyLink'][role='button']");
 			LOGGER('Number of buttons '+ replyButtons.length);
 			var timerPerClick = 500;
-			clickButtonListOneByOne(replyButtons,timerPerClick,0).then(function(done){
-				sendNumberToActionButton(0);
-				removeBackgroundColor();
-			});	
+			if(replyButtons.length > 0){
+				clickButtonListOneByOne(replyButtons,timerPerClick,0).then(function(done){
+					sendNumberToActionButton(0);
+					removeRunningBackgroundColor();
+				});	
+			}else{
+				setTimeout(removeRunningBackgroundColor,5000);
+			}
 		});		
 	});	
 }

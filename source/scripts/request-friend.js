@@ -19,9 +19,9 @@ chrome.storage.sync.get({
 });
 
 function main(scrollTimes, timerPerClick){
-	if(DEBUG) {
-		debugger;
-	}
+	// if(DEBUG) {
+	// 	debugger;
+	// }
 	LOGGER('scrollTimes '+ scrollTimes + " ; timerPerClick : "+ timerPerClick);
 	if(checkLoadMoreAble()){
 		loadMoreByScroll(null,scrollTimes).then(function(response){
