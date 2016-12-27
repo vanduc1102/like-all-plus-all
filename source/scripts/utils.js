@@ -12,12 +12,13 @@ function LOGGER(p , arguments ){
 		
 	}
 }
-function clickOnButton(button, time, number){
+function clickOnButton(button, time, number, additionalTask){
 	var d = $.Deferred();
 	// debugger;	
 	if(isVisbile(button)){
 		var rand = getRandom(1,1000) ;
 		setTimeout(function() {
+			executeFunction(additionalTask);
 			// The root of everything
 			number ++;
 			LOGGER("button clicked : "+ number);		
@@ -33,13 +34,19 @@ function clickOnButton(button, time, number){
 	return d.promise();
 }
 
-function clickButtonListOneByOne(buttons, time, number) {
+function executeFunction(varFunc){
+	if (typeof varFunc === "function") {
+		varFunc();
+	}
+}
+
+function clickButtonListOneByOne(buttons, time, number, additionalTask) {
   var d = $.Deferred();
   var promise = d.promise();
   $.each(buttons, function(index, button) {
     promise = promise.then(function(number) {
     	number = number === undefined ? 0 : number;
-    	return clickOnButton(button, time, number);
+    	return clickOnButton(button, time, number, additionalTask);
     });
   });
   d.resolve();
@@ -329,4 +336,17 @@ function getStorageSync(object, callback){
 	chrome.storage.sync.get(object, function(storagedObject) {
 		callback(storagedObject);		
 	});
+}
+
+function addRunningBackgroundColor(){
+	var bodyElement = $('body');
+	if(!bodyElement.hasClass('like-all-plus-all-running')){
+		bodyElement.addClass('like-all-plus-all-running');
+	}
+}
+
+function removeBackgroundColor(){
+	var bodyElement = $('body');
+	bodyElement.removeClass('like-all-plus-all-running');
+	
 }

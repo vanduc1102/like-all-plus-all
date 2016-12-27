@@ -1,5 +1,6 @@
 LOGGER('Send friend request');
 LOGGER_CATEGORY = "Add friends";
+var MAX_FRIEND_REQUESTS = 100;
 chrome.storage.sync.get({
 	"google": "post",
 	"google_time":"1.0",
@@ -9,20 +10,25 @@ chrome.storage.sync.get({
 	"numberOfScroll":0
   }, function(cfgData) {
   	LOGGER(cfgData);
-  	var scrollTimes = Number(cfgData["numberOfScroll"]); 
+  	var scrollTimes = Number(cfgData["numberOfScroll"]);
+  	if(scrollTimes == 0){
+  		scrollTimes = 10;
+  	}  
   	var timerPerClick = Number(cfgData["facebook_time"]) * 1000 * 2;
   	main(scrollTimes, timerPerClick);	
 });
 
 function main(scrollTimes, timerPerClick){
-	//debugger;
+	if(DEBUG) {
+		debugger;
+	}
 	LOGGER('scrollTimes '+ scrollTimes + " ; timerPerClick : "+ timerPerClick);
 	if(checkLoadMoreAble()){
 		loadMoreByScroll(null,scrollTimes).then(function(response){
 			LOGGER('Done load more page');	
 			var buttons = $("li .FriendRequestAdd");
 			LOGGER('Number of buttons '+ buttons.length);	
-			clickButtonListOneByOne(buttons,timerPerClick,0).then(function(done){
+			clickButtonListOneByOne(buttons,timerPerClick,0,closeSuggestFriendPopUp).then(function(done){
 				sendNumberToActionButton(0);
 			});	
 		});
@@ -31,7 +37,7 @@ function main(scrollTimes, timerPerClick){
 			LOGGER('isFriendsOfFriend Done load more page');	
 			var buttons = $("button.FriendRequestAdd.addButton");
 			LOGGER('isFriendsOfFriend Number of buttons '+ buttons.length);	
-			clickButtonListOneByOne(buttons,timerPerClick,0).then(function(done){
+			clickButtonListOneByOne(buttons,timerPerClick,0,closeSuggestFriendPopUp).then(function(done){
 				sendNumberToActionButton(0);
 			});	
 		});
@@ -40,7 +46,7 @@ function main(scrollTimes, timerPerClick){
 		frLoadMoreByScrollWithSelectorCondition(loadMoreSelector, scrollTimes).then(function(response){
 			var buttons = $("button.FriendRequestAdd.addButton");
 			LOGGER('Number of buttons '+ buttons.length);
-			clickButtonListOneByOne(buttons,timerPerClick,0).then(function(response){
+			clickButtonListOneByOne(buttons,timerPerClick,0,closeSuggestFriendPopUp).then(function(response){
 				sendNumberToActionButton(0);
 				LOGGER("Finished find friend on Post");
 			});	
@@ -50,18 +56,38 @@ function main(scrollTimes, timerPerClick){
 		if(dialogBox.length > 0 ){
 			var buttons = dialogBox.find(".FriendButton > button.FriendRequestAdd");
 			LOGGER('Number of buttons '+ buttons.length);
-			clickButtonListOneByOne(buttons,timerPerClick,0).then(function(response){
+			clickButtonListOneByOne(buttons,timerPerClick,0,closeSuggestFriendPopUp).then(function(response){
 				sendNumberToActionButton(0);
 				LOGGER("Finished find friend on Post");
 			});	
 		}else{
 			var buttonCssSelector = 'div#rightCol div.clearfix.ego_unit button';
-			clickOnXpathButtonTill(buttonCssSelector,timerPerClick + 2000,100).then(function(response){
-				sendNumberToActionButton(0);
-				LOGGER("Finished find of left panel");
-			});
+			var sendRequestOnHomePageButtons = $(buttonCssSelector);
+			if(sendRequestOnHomePageButtons.length > 0){
+				clickOnXpathButtonTill(buttonCssSelector,timerPerClick + 2000,MAX_FRIEND_REQUESTS).then(function(response){
+					sendNumberToActionButton(0);
+					LOGGER("Finished find of left panel");
+				});
+			}else{
+				var buttons = $("button.FriendRequestAdd.addButton");
+				LOGGER('Number of buttons '+ buttons.length);
+				clickButtonListOneByOne(buttons,timerPerClick,0,closeSuggestFriendPopUp).then(function(response){
+					sendNumberToActionButton(0);
+					LOGGER("Finished find friend on Post");
+				});	
+			}
 		}
 	}
+}
+
+function closeSuggestFriendPopUp(){
+	var button = $('a.layerCancel.selected');
+	if(button.length > 0){
+		if(button[0]){
+			button[0].click();
+		}		
+	}
+	LOGGER("Tried to close popup if existed");
 }
 
 function checkLoadMoreAble() {

@@ -95,6 +95,7 @@ var CONSTANT = {
 			"LIKE-ALL":"like-all",
 			"LIKE-POST":'like-post',
 			"LIKE-COMMENT":'like-comment',
+			"OPEN-COMMENT":'open-comment',
 			"INVITE-FRIEND":"invite-friend",
 			"COMMENT":"comment",
 			"STOP":"stop",
@@ -159,6 +160,14 @@ function genericOnClick(info, tab) {
 		]);
 		updateNumberOfUsed();
   		break;
+  	case CONSTANT["FACEBOOK"]["MENUS"]["OPEN-COMMENT"]:
+  		executeScripts(null, [ 
+		    { file : "libs/jquery.js" }, 
+		    { file : "scripts/utils.js" },
+		    { file : "scripts/open-comment.js" }
+		]);
+		updateNumberOfUsed();
+  		break;
   	case CONSTANT["FACEBOOK"]["MENUS"]["OPTION"]:
   		openOptionPage();
 		//updateNumberOfUsed();
@@ -189,6 +198,8 @@ function createContextMenus(){
 	chrome.contextMenus.create({"id":CONSTANT["FACEBOOK"]["MENUS"]["LIKE-POST"],"title": "Like post","parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
 	chrome.contextMenus.create({"id":CONSTANT["FACEBOOK"]["MENUS"]["LIKE-COMMENT"],"title": "Like comment","parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
 	chrome.contextMenus.create({"id":"separator3",type:'separator',"parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
+	chrome.contextMenus.create({"id":CONSTANT["FACEBOOK"]["MENUS"]["OPEN-COMMENT"],"title": "Open comments","parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
+	chrome.contextMenus.create({"id":"separator4",type:'separator',"parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
 	chrome.contextMenus.create({"id":CONSTANT["FACEBOOK"]["MENUS"]["STOP"],"title": "Stop by Reload (F5)","parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
 	chrome.contextMenus.create({"id":CONSTANT["FACEBOOK"]["MENUS"]["OPTION"],"title": "Option","parentId": rootFbMenu, documentUrlPatterns : fbUrlParterns});
 }
