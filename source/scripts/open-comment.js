@@ -31,7 +31,7 @@ function main(scrollTimes, timerPerClick){
 					removeRunningBackgroundColor();
 				});	
 			}else{
-				setTimeout(removeRunningBackgroundColor,5000);
+				removeRunningBackgroundColor();
 			}
 		});		
 	});	

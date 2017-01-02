@@ -8,6 +8,7 @@ chrome.storage.sync.get({
 	"numberOfScroll":0
   }, function(cfgData) {
   	LOGGER(cfgData);
+  	addRunningBackgroundColor();
   	var scrollTimes = Number(cfgData["numberOfScroll"]) + 1; 
   	var timerPerClick = Number(cfgData["facebook_time"]) * 1000 * 2;
   	main(scrollTimes, timerPerClick);	
@@ -24,6 +25,7 @@ function main(scrollTimes, timerPerClick){
 		LOGGER('Like post  Number of buttons '+ buttons.length);	
 		clickButtonListOneByOne(buttons,timerPerClick,0).then(function(done){
 			sendNumberToActionButton(0);
+			removeRunningBackgroundColor();
 		});	
 	});	
 }

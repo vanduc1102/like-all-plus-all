@@ -9,6 +9,7 @@ chrome.storage.sync.get({
   	LOGGER(cfgData);
   	var scrollTimes = Number(cfgData["numberOfScroll"]); 
   	var timerPerClick = Number(cfgData["facebook_time"]) * 1000 * 2;
+  	addRunningBackgroundColor();
   	if(isEventPage()){
   		inviteFriendEvent(timerPerClick, scrollTimes);
   	}else if(isFanPage()){
@@ -53,6 +54,7 @@ function inviteFriendEvent(timerPerClick, scrollTimes){
 			var buttonCssSelector = 'a[role="button"][ajaxify^="/ajax/events/invite/suggestions/"]';
 			clickOnXpathButtonTill(buttonCssSelector,timerPerClick + 1000,100).then(function(response){
 				sendNumberToActionButton(0);
+				removeRunningBackgroundColor();
 				LOGGER("Finished find from left panel");
 			});
 		}
@@ -78,6 +80,7 @@ function inviteFriendPage(timerPerClick, scrollTimes){
 						});
 						LOGGER('Number of buttons '+ buttons.length);	
 						clickButtonListOneByOne(buttons,timerPerClick,0).then(function(done){
+							removeRunningBackgroundColor();
 							sendNumberToActionButton(0);
 						});	
 					});

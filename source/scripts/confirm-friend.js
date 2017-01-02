@@ -8,6 +8,7 @@ chrome.storage.sync.get({
 	"numberOfScroll":0
   }, function(cfgData) {
   	LOGGER(cfgData);
+  	addRunningBackgroundColor();
   	var scrollTimes = Number(cfgData["numberOfScroll"]); 
   	var timerPerClick = Number(cfgData["facebook_time"]) * 1000 * 2;
   	main(timerPerClick, scrollTimes);	
@@ -23,6 +24,7 @@ function main(timerPerClick, scrollTimes) {
 	        LOGGER('Number of buttons ' + buttons.length);
 	        clickButtonListOneByOne(buttons, timerPerClick, 0).then(function(response){
 				sendNumberToActionButton(0);
+				removeRunningBackgroundColor();
 				LOGGER("Finished find of left panel");
 			});
 	    });
@@ -33,6 +35,7 @@ function main(timerPerClick, scrollTimes) {
 	    LOGGER('Number of buttons ' + buttons.length);
 	    clickButtonListOneByOne(buttons, timerPerClick, 0).then(function(response){
 			sendNumberToActionButton(0);
+			removeRunningBackgroundColor();
 			LOGGER("Finished find of left panel");
 		});
 	}

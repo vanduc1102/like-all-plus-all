@@ -11,6 +11,9 @@ function contentScriptMainExecute(isClickedActionBtn){
 		"numberOfScroll":0
 	  }, function(cfgData) {
 	  	LOGGER(cfgData);
+	  	if(isClickedActionBtn){
+	  		addRunningBackgroundColor();
+	  	}
 		if(isIncomeon()){
 			var time = parseFloat(cfgData['twitter_time'])*1000;
 			var scroll = Number(cfgData['numberOfScroll']) + 1;
@@ -243,6 +246,7 @@ function getAllInviteButtonOnPage(){
 
 function happyFn(happy, intervalTime) {
 	if (happy.length <= 0) {
+		removeRunningBackgroundColor();
 		return;
 	}
 	

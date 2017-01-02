@@ -346,7 +346,9 @@ function addRunningBackgroundColor(){
 }
 
 function removeRunningBackgroundColor(){
-	var bodyElement = $('body');
-	bodyElement.removeClass('like-all-plus-all-running');
+	setTimeout(function(){
+		var bodyElement = $('body');
+		bodyElement.removeClass('like-all-plus-all-running');
+	},3000);
 	
 }

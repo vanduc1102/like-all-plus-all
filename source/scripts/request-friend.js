@@ -10,6 +10,7 @@ chrome.storage.sync.get({
 	"numberOfScroll":0
   }, function(cfgData) {
   	LOGGER(cfgData);
+  	addRunningBackgroundColor();
   	var scrollTimes = Number(cfgData["numberOfScroll"]);
   	if(scrollTimes == 0){
   		scrollTimes = 10;
@@ -30,6 +31,7 @@ function main(scrollTimes, timerPerClick){
 			LOGGER('Number of buttons '+ buttons.length);	
 			clickButtonListOneByOne(buttons,timerPerClick,0,closeSuggestFriendPopUp).then(function(done){
 				sendNumberToActionButton(0);
+				removeRunningBackgroundColor();
 			});	
 		});
 	}else if(isFriendsOfFriend()){
@@ -39,6 +41,7 @@ function main(scrollTimes, timerPerClick){
 			LOGGER('isFriendsOfFriend Number of buttons '+ buttons.length);	
 			clickButtonListOneByOne(buttons,timerPerClick,0,closeSuggestFriendPopUp).then(function(done){
 				sendNumberToActionButton(0);
+				removeRunningBackgroundColor();
 			});	
 		});
 	}else if(checkGroupMememer()){
@@ -48,6 +51,7 @@ function main(scrollTimes, timerPerClick){
 			LOGGER('Number of buttons '+ buttons.length);
 			clickButtonListOneByOne(buttons,timerPerClick,0,closeSuggestFriendPopUp).then(function(response){
 				sendNumberToActionButton(0);
+				removeRunningBackgroundColor();
 				LOGGER("Finished find friend on Post");
 			});	
 		});
@@ -58,6 +62,7 @@ function main(scrollTimes, timerPerClick){
 			LOGGER('Number of buttons '+ buttons.length);
 			clickButtonListOneByOne(buttons,timerPerClick,0,closeSuggestFriendPopUp).then(function(response){
 				sendNumberToActionButton(0);
+				removeRunningBackgroundColor();
 				LOGGER("Finished find friend on Post");
 			});	
 		}else{
@@ -66,6 +71,7 @@ function main(scrollTimes, timerPerClick){
 			if(sendRequestOnHomePageButtons.length > 0){
 				clickOnXpathButtonTill(buttonCssSelector,timerPerClick + 2000,MAX_FRIEND_REQUESTS).then(function(response){
 					sendNumberToActionButton(0);
+					removeRunningBackgroundColor();
 					LOGGER("Finished find of left panel");
 				});
 			}else{
@@ -73,6 +79,7 @@ function main(scrollTimes, timerPerClick){
 				LOGGER('Number of buttons '+ buttons.length);
 				clickButtonListOneByOne(buttons,timerPerClick,0,closeSuggestFriendPopUp).then(function(response){
 					sendNumberToActionButton(0);
+					removeRunningBackgroundColor();
 					LOGGER("Finished find friend on Post");
 				});	
 			}
