@@ -21,7 +21,7 @@ function contentScriptMainExecute(isClickedActionBtn){
 			sendAnalytic("incomeon");
 			return;
 		}
-		if(cfgData['numberOfScroll'] > 1 && isClickedActionBtn){
+		if(cfgData['numberOfScroll'] > 1 && isScrollAble() && isClickedActionBtn){
 			autoScrollToBottom(cfgData);
 		}else{
 			if(isFacebook() && cfgData['facebook'] == 'both'){
@@ -190,7 +190,9 @@ function createHappyButtons(sad_posts){
 	}
 	return array;
 }
-
+function isScrollAble(){
+	return fullUrl.indexOf("https://www.linkedin.com/mynetwork/") == -1;
+}
 
 function getAllInviteButtonOnPage(){
 	var originButtons =  $('a[href^="/people/invite?"]').filter(function(index){
