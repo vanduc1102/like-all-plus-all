@@ -21,7 +21,7 @@ function contentScriptMainExecute(isClickedActionBtn){
 			sendAnalytic("incomeon");
 			return;
 		}
-		if(cfgData['numberOfScroll'] > 1 && isScrollable() && isClickedActionBtn){
+		if(cfgData['numberOfScroll'] > 1 && isClickedActionBtn){
 			autoScrollToBottom(cfgData);
 		}else{
 			if(isFacebook() && cfgData['facebook'] == 'both'){
@@ -140,14 +140,10 @@ function contentScriptMainExecute(isClickedActionBtn){
 		if(isLinkedin()){
 			sendAnalytic("linkedin");
 			time = parseFloat(cfgData['twitter_time'])*1000;
-			if( isLinkedinCompany() ){
-				sad_posts = $("a.like");
-			}else{
-				sad_posts = $("button.like").filter(function(index){ 
-					var button = $(this);
-					return button.attr('data-type') != 'comment' && button.attr('data-type') != 'reply' && !button.attr('data-liked') 
-				});
-			}
+			sad_posts = $("button.button.like").filter(function(index){ 
+				var button = $(this);
+				return !button.hasClass("active"); 
+			});
 		}
 
 		if(isTumblr()){
@@ -176,11 +172,6 @@ function contentScriptMainExecute(isClickedActionBtn){
 		var numberOfLikes=sad_posts.length;
 		sendNumberToActionButton(numberOfLikes);
 
-
-		
-
-		
-		
 		LOGGER(time);
 		
 		if(isLinkedInPeopleYouMayKnow()){
@@ -188,13 +179,7 @@ function contentScriptMainExecute(isClickedActionBtn){
 			makeConnection(time, 0);
 		}else{
 			happyFn(happy , time);	
-		}
-
-		if(isLinkedInSearchPeople()){
-			sendAllInvitation(0);
-		}
-
-		
+		}	
 	};
 }
 
@@ -206,35 +191,6 @@ function createHappyButtons(sad_posts){
 	return array;
 }
 
-function sendAllInvitation (number) {
-	var d = $.Deferred();
-	sendAllInvitationOnPage(number).then(function(currentNumber) {
-	    loadNewPageAndSendInvitation(d,currentNumber);
-	});
-	d.done(function(done) {
-	    sendNumberToActionButton(0);
-	});
-}
-
-function loadNewPageAndSendInvitation(defered,number) {
-  	loadNextPage(number).then(function(oldPageNumber) {
-	    sendAllInvitationOnPage(oldPageNumber).then(function(newPageNumber) {
-	    	loadNewPageAndSendInvitation(defered,newPageNumber);
-	    });
-	}, function(rejected) {
-		defered.resolve();
-	});
-  return defered.promise();
-}
-
-function sendAllInvitationOnPage(number){
-	var defered = $.Deferred();			
-	var happyButtons = getAllInviteButtonOnPage();
-	clickButtonListOneByOne(happyButtons,2000,number).then(function(number){
-		defered.resolve(number);
-	});
-	return defered.promise();
-}
 
 function getAllInviteButtonOnPage(){
 	var originButtons =  $('a[href^="/people/invite?"]').filter(function(index){
@@ -272,9 +228,8 @@ function happyFn(happy, intervalTime) {
 
 // Make connection in LinkedIn
 function makeConnection(intervalTime, count){
-	count++;
-	
-	var connectionElement = $("ul > li:first-child button.bt-request-buffed");
+	count++;	
+	var connectionElement = $("ul.people > li:first-child button.button-secondary-medium");
 	if(connectionElement.length > 0){
 		connectionElement.click();
 		sendNumberToActionButton(count);
@@ -316,14 +271,9 @@ function isLinkedin(){
 	return urlOrigin.indexOf('linkedin') > -1;
 }
 function isLinkedInPeopleYouMayKnow(){
-	return fullUrl.indexOf('https://www.linkedin.com/people/') > -1;
+	return fullUrl.indexOf('https://www.linkedin.com/mynetwork/') > -1;
 }
-function isLinkedInSearchPeople(){
-	return fullUrl.indexOf("https://www.linkedin.com/vsearch/") > -1 ;
-}
-function isScrollable(){
-	return !(fullUrl.indexOf("https://www.linkedin.com/vsearch/") > -1);
-}
+
 function isIncomeon(){
 	return fullUrl.indexOf("incomeon.com") > -1;
 } 
@@ -404,10 +354,6 @@ function loadNextPage(number){
 		d.reject(true);
 	}
 	return d.promise();
-}
-
-function isLinkedinCompany(){
-	return window.location.pathname.indexOf('company') > -1;
 }
 
 function isTumblr(){
