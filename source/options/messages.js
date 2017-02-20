@@ -1,5 +1,5 @@
 var messages={
-	'en':{
+	'vi':{
 		'btnSave':'Lưu lại',
 		'btnSubmitPayPal':'Gửi {} lon với Paypal',
 		'msgPostFb':'bài đăng',
@@ -30,7 +30,7 @@ var messages={
 		"msgDoNotOpenAgainTitle":'Tôi không muốn trang này tự động mở lần tiếp theo',
 		"msgDoNotOpenAgain":'Tôi đã biết cách sử dụng, đừng mở trang này nữa.'
 	},
-	'enn':{
+	'en':{
 		'btnSave':'Save',
 		'btnSubmitPayPal':'Send {} cans with Paypal',
 		'msgPostFb':'post',
