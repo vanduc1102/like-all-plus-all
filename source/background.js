@@ -52,19 +52,13 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 chrome.runtime.onInstalled.addListener(function(details) {
 	LOGGER("on Installed");
 	chrome.storage.sync.get({
-		isOptionOpened : false
+		isCloseOptionPage : false
 	}, function(cfgData) {
 		LOGGER("Option is not opened yet!" + JSON.stringify(cfgData));
-		if ( !cfgData["isOptionOpened"] ) {
+		if ( !cfgData["isCloseOptionPage"] ) {
 			LOGGER("Option tab is openning");
 			openOptionPage();
 		}
-	});
-	
-	chrome.storage.sync.set({
-		"isOptionOpened" : true
-	}, function() {
-		LOGGER("Option is openned, Dont open it again.");
 	});
 });
 
@@ -280,7 +274,7 @@ function isFacebook(tab){
 	return false;
 }
 function isConnect(currentUrl){
-	var urls = ["https://www.linkedin.com/vsearch/","https://www.linkedin.com/people/"];
+	var urls = ["https://www.linkedin.com/vsearch/","https://www.linkedin.com/mynetwork/"];
 	var url = urls.find(link => currentUrl.indexOf(link) > -1);
 	return url != undefined;
 }

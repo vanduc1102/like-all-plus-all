@@ -1,5 +1,5 @@
 var messages={
-	'vi':{
+	'en':{
 		'btnSave':'Lưu lại',
 		'btnSubmitPayPal':'Gửi {} lon với Paypal',
 		'msgPostFb':'bài đăng',
@@ -26,9 +26,11 @@ var messages={
 		"msgGoogleAnalyticAllow":"Đồng ý gửi dữ liệu thống kê đến Google",
 		"msgGoogleAnalytic":"Dữ liệu thống kê",
 		"msgAutoLike":"Tự động thích",
-		"msgAutoLikeCheckBox":"Cho phép tự động thích"
+		"msgAutoLikeCheckBox":"Cho phép tự động thích",
+		"msgDoNotOpenAgainTitle":'Tôi không muốn trang này tự động mở lần tiếp theo',
+		"msgDoNotOpenAgain":'Tôi đã biết cách sử dụng, đừng mở trang này nữa.'
 	},
-	'en':{
+	'enn':{
 		'btnSave':'Save',
 		'btnSubmitPayPal':'Send {} cans with Paypal',
 		'msgPostFb':'post',
@@ -55,8 +57,9 @@ var messages={
 		"msgGoogleAnalyticAllow":"Allow send data to Google Analytics",
 		"msgGoogleAnalytic":"Goole Analytics",
 		"msgAutoLike":"Auto Like",
-		"msgAutoLikeCheckBox":"Allow auto like"
-
+		"msgAutoLikeCheckBox":"Allow auto like",
+		"msgDoNotOpenAgainTitle":'Do not open option page next time',
+		"msgDoNotOpenAgain":'I know how to use options page. Don\'t open it next time.'
 	},
 	'fr':{
 		'btnSave':'Enregistrer',

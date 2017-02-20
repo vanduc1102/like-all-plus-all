@@ -10,7 +10,10 @@ $("#paypal-button").val(paypalButtonVal);
 
 $(function() {
   $("[i18n]").each(function() {
-    $(this).html(messages[userLang][$(this).attr("i18n")]);
+	var message = messages[userLang][$(this).attr("i18n")];
+	if(message){
+		$(this).html(message);
+	}
   });
   
 });
@@ -41,6 +44,7 @@ function updateLinkAnchorTag(anchorSelector){
 		var googleAnalytic = getCheckBoxValue('google-analytic');
 		var allowAutoLike = getCheckBoxValue('allow-auto-like');
 		var autoLikeTime = document.getElementById('auto-like-time').value;
+		var isCloseOptionPage = getCheckBoxValue('close-option-page');
 		
 		LOGGER(youtubeCheck);
 		chrome.storage.sync.set({
@@ -53,7 +57,8 @@ function updateLinkAnchorTag(anchorSelector){
 			"youtube_like":youtubeCheck,
 			'google_analytic':googleAnalytic,
 			'allow-auto-like':allowAutoLike,
-			'auto-like-time':autoLikeTime
+			'auto-like-time':autoLikeTime,
+			'isCloseOptionPage':isCloseOptionPage
 		}, function() {
 			// Update status to let user know options were saved.
 			var saveStatus =$('#save-success');
@@ -78,7 +83,8 @@ function updateLinkAnchorTag(anchorSelector){
 			"count_number":1,
 			'google_analytic':true,
 			'allow-auto-like':false,
-			'auto-like-time':60
+			'auto-like-time':60,
+			isCloseOptionPage:false
 		}, function(item) {
 			document.getElementById('google').value =item['google'];
 			document.getElementById('google-time').value =item['google_time'];
@@ -90,6 +96,7 @@ function updateLinkAnchorTag(anchorSelector){
 			setCheckBoxValue( "youtube-like",item['youtube_like']);
 			setCheckBoxValue( "google-analytic",item['google_analytic']);
 			setCheckBoxValue( "allow-auto-like",item['allow-auto-like']);
+			setCheckBoxValue( "close-option-page",item['isCloseOptionPage']);
 			updateNumber(item["count_number"]);
 			// console.log(item);
 		});
