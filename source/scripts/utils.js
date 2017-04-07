@@ -1,16 +1,11 @@
 /*
- * Simple logging utility.
- */
-'use strict';
-
-/*
  * Global logging trigger.
  * Logging a message via `LOG && log.v('x');` allows minification
  * tools to omit logging lines altogether when LOG is false.
  */
 const LOG = true;
-var DEBUG = true;
-var CLICK_BUTTON = false;
+var DEBUG = false;
+var CLICK_BUTTON = true;
 var log = {};
 
 log.ASSERT = 1;
@@ -53,8 +48,11 @@ log.setLevel = function(level) {
     }
     log.level = level;
 };
-
-log.setLevel(log.VERBOSE);
+if (DEBUG) {
+    log.setLevel(log.DEBUG);
+} else {
+    log.setLevel(log.ASSERT);
+}
 
 function clickOnButton(button, time, number, additionalTask) {
     var d = $.Deferred();
