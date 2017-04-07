@@ -1,5 +1,5 @@
 //The main function.
-LOGGER("Background is running");
+log.debug("Background is running");
 var urls = ['plus.google.com',
     '.facebook.com',
     'twitter.com',
@@ -31,13 +31,13 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 
 chrome.tabs.onCreated.addListener(function(tab) {
     currentTab = tab;
-    LOGGER('chrome.tabs.onCreated.addListener tab.id ' + tab.id + ' ; tab.url ' + tab.url);
+    log.debug('chrome.tabs.onCreated.addListener tab.id ' + tab.id + ' ; tab.url ' + tab.url);
     disableButton(tab);
 });
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     currentTab = tab;
-    LOGGER('chrome.tabs.onUpdated.addListener tab.id ' + tab.id + ' ; tab.url ' + tab.url);
+    log.debug('chrome.tabs.onUpdated.addListener tab.id ' + tab.id + ' ; tab.url ' + tab.url);
     try {
         if (checkEnable(tab.url)) {
             enableButtonIfNoneText(tab);
@@ -45,19 +45,19 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
             disableButton(tab);
         }
     } catch (e) {
-        LOGGER(' Exception on chrome.tabs.onUpdated');
+        log.debug(' Exception on chrome.tabs.onUpdated');
     }
     likeYoutubeVideo(tab.url);
 });
 chrome.runtime.onInstalled.addListener(function(details) {
-    LOGGER("on Installed");
+    log.debug("on Installed");
     //    setStorageNumber("isCloseOptionPage", false);
     chrome.storage.sync.get({
         isCloseOptionPage: false
     }, function(cfgData) {
-        LOGGER("Option is not opened yet!" + JSON.stringify(cfgData));
+        log.debug("Option is not opened yet!" + JSON.stringify(cfgData));
         if (!cfgData["isCloseOptionPage"]) {
-            LOGGER("Option tab is openning");
+            log.debug("Option tab is openning");
             openOptionPage();
             setStorageNumber("isCloseOptionPage", true);
         }
@@ -65,7 +65,7 @@ chrome.runtime.onInstalled.addListener(function(details) {
 });
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    LOGGER('receive: ' + request.count + " from tab : " + sender.tab.id + " content script:" + sender.tab.url);
+    log.debug('receive: ' + request.count + " from tab : " + sender.tab.id + " content script:" + sender.tab.url);
     if (request.isAnalytic) {
         trackButton(request.buttonId);
         return;
@@ -101,9 +101,9 @@ var CONSTANT = {
 }
 
 function genericOnClick(info, tab) {
-    LOGGER("Cliked : " + info.menuItemId);
+    log.debug("Cliked : " + info.menuItemId);
     if (!isFacebook(tab)) {
-        LOGGER("Context menus support Facebook only.");
+        log.debug("Context menus support Facebook only.");
         return;
     }
     trackButton(info.menuItemId);
@@ -170,6 +170,7 @@ function genericOnClick(info, tab) {
             break;
         case CONSTANT["FACEBOOK"]["MENUS"]["STOP"]:
             executeScripts(null, [
+                { file: "scripts/utils.js" },
                 { file: "scripts/stop-reload.js" }
             ]);
             break;
@@ -242,7 +243,7 @@ function checkTabIsEnable() {
 
 function enableButtonIfNoneText(tab) {
     chrome.browserAction.getBadgeText({ "tabId": tab.id }, function(text) {
-        LOGGER("enableButtonIfNoneText : " + text);
+        log.debug("enableButtonIfNoneText : " + text);
         if (text == '') {
             enableButton(tab);
             setBadgeText(tab, getDefaultText(tab));
@@ -291,10 +292,10 @@ function likeYoutubeVideo(url) {
     chrome.storage.sync.get({
         "youtube_like": false
     }, function(cfgData) {
-        LOGGER(cfgData);
+        log.debug(cfgData);
         if (cfgData['youtube_like']) {
             if (url.indexOf(youtubeURL) > -1) {
-                LOGGER("You are in youtube watch page");
+                log.debug("You are in youtube watch page");
                 try {
                     executeScripts(null, [
                         { file: "libs/jquery.js" },
@@ -305,7 +306,7 @@ function likeYoutubeVideo(url) {
                     console.log(' Exception on chrome.browserAction.onClicked');
                 }
             } else {
-                LOGGER("You are in youtube, but not waching page");
+                log.debug("You are in youtube, but not waching page");
             }
         }
     });
@@ -369,7 +370,7 @@ getStorageSync({
     'allow-auto-like': false,
     'auto-like-time': 30
 }, function(object) {
-    LOGGER("get system storage : ", object);
+    log.debug("get system storage : ", object);
     registerGoogleAnalytic(object['google_analytic']);
     handleIntervalTask(object['allow-auto-like'], object['auto-like-time']);
 });
@@ -377,7 +378,7 @@ getStorageSync({
 //registerGoogleAnalytic('true');
 
 function registerGoogleAnalytic(isAllow) {
-    LOGGER("isAllowGoogleAnalytic : ", isAllow);
+    log.debug("isAllowGoogleAnalytic : ", isAllow);
     if (isAllow) {
         _gaq = _gaq || [];
         _gaq.push(['_setAccount', 'UA-83786826-2']);
@@ -398,7 +399,7 @@ function handleIntervalTask(isEnable, intervalTime) {
     var IntervalTask;
     if (isEnable && !IntervalTask) {
         IntervalTask = setInterval(function() {
-            LOGGER("IntervalTask Execute after " + interValMinute + " seconds.");
+            log.debug("IntervalTask Execute after " + interValMinute + " seconds.");
             executeScripts(null, [
                 { file: "libs/jquery.js" },
                 { file: "scripts/utils.js" },

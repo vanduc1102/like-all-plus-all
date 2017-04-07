@@ -46,7 +46,7 @@ function updateLinkAnchorTag(anchorSelector) {
         var allowAutoLike = getCheckBoxValue('allow-auto-like');
         var autoLikeTime = document.getElementById('auto-like-time').value;
 
-        LOGGER(youtubeCheck);
+        log.debug(youtubeCheck);
         chrome.storage.sync.set({
             "google": google,
             "google_time": google_time,

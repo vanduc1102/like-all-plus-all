@@ -1,18 +1,60 @@
+/*
+ * Simple logging utility.
+ */
+'use strict';
+
+/*
+ * Global logging trigger.
+ * Logging a message via `LOG && log.v('x');` allows minification
+ * tools to omit logging lines altogether when LOG is false.
+ */
+const LOG = true;
 var DEBUG = true;
-var CLICK_BUTTON = true;
-var LOGGER_CATEGORY;
+var CLICK_BUTTON = false;
+var log = {};
 
-function LOGGER(p, arguments) {
-    if (DEBUG) {
-        var jsonArguments = arguments ? JSON.stringify(arguments) : "";
-        if (LOGGER_CATEGORY) {
-            console.log(LOGGER_CATEGORY + " - ", p, jsonArguments);
-        } else {
-            console.log(p, jsonArguments);
-        }
+log.ASSERT = 1;
+log.ERROR = 2;
+log.WARN = 3;
+log.INFO = 4;
+log.DEBUG = 5;
+log.VERBOSE = 6;
 
+log.setLevel = function(level) {
+    if (level >= log.ASSERT) {
+        log.assert = console.assert.bind(window.console);
+    } else {
+        log.assert = function() {}
     }
-}
+    if (level >= log.ERROR) {
+        log.error = console.error.bind(window.console);
+    } else {
+        log.error = function() {}
+    }
+    if (level >= log.WARN) {
+        log.warn = console.warn.bind(window.console);
+    } else {
+        log.warn = function() {}
+    }
+    if (level >= log.INFO) {
+        log.info = console.info.bind(window.console);
+    } else {
+        log.info = function() {}
+    }
+    if (level >= log.DEBUG) {
+        log.debug = console.debug.bind(window.console);
+    } else {
+        log.debug = function() {}
+    }
+    if (level >= log.VERBOSE) {
+        log.verbose = console.log.bind(window.console);
+    } else {
+        log.verbose = function() {}
+    }
+    log.level = level;
+};
+
+log.setLevel(log.VERBOSE);
 
 function clickOnButton(button, time, number, additionalTask) {
     var d = $.Deferred();
@@ -23,7 +65,7 @@ function clickOnButton(button, time, number, additionalTask) {
             executeFunction(additionalTask);
             // The root of everything
             number++;
-            LOGGER("button clicked : " + number);
+            log.debug("button clicked : " + number);
             if (CLICK_BUTTON) {
                 button.click();
             }
@@ -94,7 +136,7 @@ function clickOnElementTill(cssSelector, d, times, expected) {
         d.resolve();
         return d.promise();
     }
-    LOGGER("Load more by element  " + times);
+    log.debug("Load more by element  " + times);
     clickOnElementAndWait(cssSelector).then(function(resolve) {
         times++;
         clickOnElementTill(cssSelector, d, times, expected);
@@ -114,7 +156,7 @@ function clickOnElementAndWait(cssSelector) {
         }, 1000 + rand);
 
         setTimeout(function() {
-            LOGGER("clickOnElementAndWait  ");
+            log.debug("clickOnElementAndWait  ");
             d.resolve();
         }, 5000 + rand);
     } else {
@@ -135,7 +177,7 @@ function scrollWrapper(cssSelector, d, times, expected) {
     }
     times++;
     scrollToBottom(cssSelector).then(function(resolve) {
-        LOGGER("Load more by scroll  " + times);
+        log.debug("Load more by scroll  " + times);
         scrollWrapper(cssSelector, d, times, expected);
     });
     return d.promise();
@@ -178,11 +220,11 @@ function loadMoreByScrollWithSelectorCondition(scrollSelector, selectorCondition
 
 function scrollToBottomConditionWrapper(scrollbarSelector, d, times, conditionSelector) {
     if (times == 50) {
-        LOGGER("Stop scrollToBottomConditionWrapper, cause it reach the maximum.");
+        log.debug("Stop scrollToBottomConditionWrapper, cause it reach the maximum.");
         d.resolve();
         return d.promise();
     }
-    LOGGER("Load more by scroll  " + times);
+    log.debug("Load more by scroll  " + times);
     times++;
     scrollToBottomCondition(scrollbarSelector, conditionSelector).then(function(resolve) {
         scrollToBottomConditionWrapper(scrollbarSelector, d, times, conditionSelector);
@@ -215,10 +257,10 @@ function scrollToBottomCondition(scrollbarSelector, conditionSelector) {
     window.setTimeout(function() {
         var elementsAfterScroll = $(conditionSelector);
         if (elementsAfterScroll.length > currentElements.length) {
-            LOGGER("Number of element increase from " + currentElements.length + " to " + elementsAfterScroll.length);
+            log.debug("Number of element increase from " + currentElements.length + " to " + elementsAfterScroll.length);
             d.resolve();
         } else {
-            LOGGER("Number of element not change, Stop scroll");
+            log.debug("Number of element not change, Stop scroll");
             d.reject();
         }
     }, 4000 + getRandom(1, 1000));
@@ -248,12 +290,12 @@ function waitForElementToDisplay(selector) {
 
 function waitForElementToDisplayPromise(selector, d) {
     if ($('form[action*="ajax/pages/invite/"]').is(":visible")) {
-        LOGGER("Finished waiting for selector appear : " + selector);
+        log.debug("Finished waiting for selector appear : " + selector);
         d.resolve();
         return d.promise();
     } else {
         setTimeout(function() {
-            LOGGER("Waiting for selector appear : " + selector);
+            log.debug("Waiting for selector appear : " + selector);
             waitForElementToDisplayPromise(selector, d);
         }, 500);
     }

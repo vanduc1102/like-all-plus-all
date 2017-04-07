@@ -1,2 +1,2 @@
-LOGGER_CATEGORY = "Like all";
+log.debug("Reload page");
 location.reload();
