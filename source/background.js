@@ -7,7 +7,8 @@ var urls = ['plus.google.com',
     'linkedin.com',
     'tumblr.com',
     'incomeon.com',
-    'youtube.com'
+    'youtube.com',
+    'reddit.com'
 ];
 var youtubeURL = "www.youtube.com/watch";
 var count = 0;

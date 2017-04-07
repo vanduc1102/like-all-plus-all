@@ -168,6 +168,12 @@ function contentScriptMainExecute(isClickedActionBtn) {
             });
         }
 
+        if (isRedit()) {
+            sendAnalytic("like_redit");
+            time = parseFloat(cfgData['twitter_time']) * 1000;
+            sad_posts = $("div.arrow.up");
+        }
+
 
         var happy = createHappyButtons(sad_posts);
 
@@ -368,6 +374,10 @@ function loadNextPage(number) {
 
 function isTumblr() {
     return urlOrigin.indexOf('tumblr.com') > -1;
+}
+
+function isRedit() {
+    return urlOrigin.indexOf('.reddit.com') > -1;
 }
 
 function isNewGooglePlus() {
