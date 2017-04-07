@@ -168,7 +168,7 @@ function contentScriptMainExecute(isClickedActionBtn) {
             });
         }
 
-        if (isRedit()) {
+        if (isReddit()) {
             sendAnalytic("like_redit");
             time = parseFloat(cfgData['twitter_time']) * 1000;
             sad_posts = $("div.arrow.up");
@@ -376,7 +376,7 @@ function isTumblr() {
     return urlOrigin.indexOf('tumblr.com') > -1;
 }
 
-function isRedit() {
+function isReddit() {
     return urlOrigin.indexOf('.reddit.com') > -1;
 }
 
