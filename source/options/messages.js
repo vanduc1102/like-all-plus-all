@@ -25,7 +25,7 @@ var messages = {
         "msgPleaseReview": "Hãy đánh giá giúp tôi.",
         "msgGoogleAnalyticAllow": "Đồng ý gửi dữ liệu thống kê đến Google",
         "msgGoogleAnalytic": "Dữ liệu thống kê",
-        "msgAutoLike": "Tự động thích",
+        "msgAutoLike": "Tự động thích (Facebook)",
         "msgAutoLikeCheckBox": "Cho phép tự động thích"
     },
     'en': {
