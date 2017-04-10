@@ -4,7 +4,7 @@
  * tools to omit logging lines altogether when LOG is false.
  */
 var DEBUG = true;
-var CLICK_BUTTON = false;
+var CLICK_BUTTON = true;
 var log = {};
 
 log.ASSERT = 1;

@@ -359,7 +359,7 @@ function openOptionPage() {
 getStorageSync({
     'google_analytic': true,
     'allow-auto-like': false,
-    'auto-like-time': 30
+    'auto-like-time': 5
 }, function(object) {
     log.debug("get system storage : ", object);
     registerGoogleAnalytic(object['google_analytic']);
@@ -386,11 +386,13 @@ function registerGoogleAnalytic(isAllow) {
 }
 
 function handleIntervalTask(isEnable, intervalTime) {
-    var interValMinute = Number(intervalTime);
+    var intervalMinute = Number(intervalTime);
+    var intervalTimeInSeconds = intervalMinute * 1000 *60;
     var IntervalTask;
+    log.debug("Interval time in second is set : "+ intervalTimeInSeconds);
     if (isEnable && !IntervalTask) {
         IntervalTask = setInterval(function() {
-            log.debug("IntervalTask Execute after " + interValMinute + " seconds.");
+            log.debug("IntervalTask Execute after " + intervalTimeInSeconds + " seconds.");
             executeScripts(null, [
                 { file: "libs/jquery.js" },
                 { file: "scripts/supported-url-utils.js" },
@@ -398,7 +400,7 @@ function handleIntervalTask(isEnable, intervalTime) {
                 { file: "scripts/content_script.js" },
                 { file: "scripts/on-interval-execute.js" }
             ]);
-        }, interValMinute * 1000 * 60);
+        }, intervalTimeInSeconds);
     } else {
         if (!isEnable) {
             clearInterval(IntervalTask);
