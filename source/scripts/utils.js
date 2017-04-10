@@ -3,9 +3,8 @@
  * Logging a message via `LOG && log.v('x');` allows minification
  * tools to omit logging lines altogether when LOG is false.
  */
-const LOG = true;
-var DEBUG = false;
-var CLICK_BUTTON = true;
+var DEBUG = true;
+var CLICK_BUTTON = false;
 var log = {};
 
 log.ASSERT = 1;

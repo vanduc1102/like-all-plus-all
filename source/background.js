@@ -1,15 +1,5 @@
 //The main function.
 log.debug("Background is running");
-var urls = ['plus.google.com',
-    '.facebook.com',
-    'twitter.com',
-    'instagram.com',
-    'linkedin.com',
-    'tumblr.com',
-    'incomeon.com',
-    'youtube.com',
-    'reddit.com'
-];
 var youtubeURL = "www.youtube.com/watch";
 var count = 0;
 var currentTab = null;
@@ -403,11 +393,12 @@ function handleIntervalTask(isEnable, intervalTime) {
             log.debug("IntervalTask Execute after " + interValMinute + " seconds.");
             executeScripts(null, [
                 { file: "libs/jquery.js" },
+                { file: "scripts/supported-url-utils.js" },
                 { file: "scripts/utils.js" },
                 { file: "scripts/content_script.js" },
                 { file: "scripts/on-interval-execute.js" }
             ]);
-        }, interValMinute * 1000);
+        }, interValMinute * 1000 * 60);
     } else {
         if (!isEnable) {
             clearInterval(IntervalTask);
