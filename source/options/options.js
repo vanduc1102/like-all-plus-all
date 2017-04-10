@@ -82,7 +82,7 @@ function updateLinkAnchorTag(anchorSelector) {
             "count_number": 1,
             'google_analytic': true,
             'allow-auto-like': false,
-            'auto-like-time': 60
+            'auto-like-time': 5
         }, function(item) {
             document.getElementById('google').value = item['google'];
             document.getElementById('google-time').value = item['google_time'];

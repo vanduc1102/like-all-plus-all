@@ -8,6 +8,7 @@ var messages = {
         'msgBoth': "cả hai",
         'msgFavorite': 'Thêm yêu thích mỗi',
         'msgSecond': 'giây',
+        'msgMinute': 'phút',
         'msgChooseOption': 'Tùy chọn',
         'msgSupsponsor': 'Gửi cho mình vài lon Coca Cola',
         'msgAddicts': 'Mình là một người nghiện Coca Cola',
@@ -25,7 +26,7 @@ var messages = {
         "msgPleaseReview": "Hãy đánh giá giúp tôi.",
         "msgGoogleAnalyticAllow": "Đồng ý gửi dữ liệu thống kê đến Google",
         "msgGoogleAnalytic": "Dữ liệu thống kê",
-        "msgAutoLike": "Tự động thích (Facebook)",
+        "msgAutoLike": "Tự động thích",
         "msgAutoLikeCheckBox": "Cho phép tự động thích"
     },
     'en': {
@@ -37,6 +38,7 @@ var messages = {
         'msgFavorite': 'Add favorite each',
         'msgBoth': 'all',
         'msgSecond': 'seconds',
+        'msgMinute': 'minutes',
         'msgChooseOption': 'Choose options',
         'msgSupsponsor': 'Give me some Cokes',
         'msgAddicts': 'I am a Coke addicts',
@@ -54,7 +56,7 @@ var messages = {
         "msgPleaseReview": "Please give me a review",
         "msgGoogleAnalyticAllow": "Allow send data to Google Analytics",
         "msgGoogleAnalytic": "Goole Analytics",
-        "msgAutoLike": "Auto Like (Facebook Only)",
+        "msgAutoLike": "Auto Like",
         "msgAutoLikeCheckBox": "Allow auto like"
     },
     'fr': {
