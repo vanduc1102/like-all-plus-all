@@ -28,6 +28,7 @@ chrome.tabs.onCreated.addListener(function(tab) {
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     currentTab = tab;
+    var url = tab.url;
     log.debug('chrome.tabs.onUpdated.addListener tab.id ' + tab.id + ' ; tab.url ' + tab.url);
     try {
         if (checkEnable(tab.url)) {
@@ -38,7 +39,11 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     } catch (e) {
         log.debug(' Exception on chrome.tabs.onUpdated');
     }
-    likeYoutubeVideo(tab.url);
+    
+    if (url !== undefined && changeInfo.status == "complete") {
+        likeYoutubeVideo(tab.url);
+    }
+    
 });
 chrome.runtime.onInstalled.addListener(function(details) {
     log.debug("on Installed");
