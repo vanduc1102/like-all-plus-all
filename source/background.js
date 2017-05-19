@@ -40,7 +40,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
         log.debug(' Exception on chrome.tabs.onUpdated');
     }
     
-    if (url !== undefined && changeInfo.status == "complete") {
+    if (url !== undefined && changeInfo.status == "complete" && url.indexOf('youtube') > 0) {
         likeYoutubeVideo(tab.url);
     }
     
@@ -392,7 +392,7 @@ function registerGoogleAnalytic(isAllow) {
 
 function handleIntervalTask(isEnable, intervalTime) {
     var intervalMinute = Number(intervalTime);
-    var intervalTimeInSeconds = intervalMinute * 1000 *60;
+    var intervalTimeInSeconds = intervalMinute * 1000 * 60;
     var IntervalTask;
     log.debug("Interval time in second is set : "+ intervalTimeInSeconds);
     if (isEnable && !IntervalTask) {
