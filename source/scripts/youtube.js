@@ -1,3 +1,4 @@
+log.debug("Youtube auto like start.");
 var ytTimeout = setTimeout(function() {
     var button = $("button.like-button-renderer-like-button-unclicked");
     if (button.hasClass("hid")) {
