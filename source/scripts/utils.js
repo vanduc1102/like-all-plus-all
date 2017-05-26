@@ -443,7 +443,6 @@ function fireEvent(node, eventName) {
 
             default:
                 throw "fireEvent: Couldn't find an event class for event '" + eventName + "'.";
-                break;
         }
         var event = doc.createEvent(eventClass);
 
