@@ -1,4 +1,4 @@
-var MAX_LOAD_MORE_COMMENT = 50;
+var MAX_LOAD_MORE_COMMENT = 25;
 chrome.storage.sync.get({
     "google": "post",
     "google_time": "1.0",
