@@ -110,7 +110,7 @@ function contentScriptMainExecute(isClickedActionBtn) {
                     sendAnalytic("facebook-post");
                     break;
                 case 'comment':
-                    sad_posts = $("a[data-testid='fb-ufi-likelink'][aria-pressed='false'],a[class='UFIReactionLink'][data-ft='{\"tn\":\">\"}']");
+                    sad_posts = $("a[data-testid='ufi_comment_like_link'][aria-pressed='false'],a[data-testid='fb-ufi-likelink'][aria-pressed='false'],a[class='UFIReactionLink'][data-ft='{\"tn\":\">\"}']");
                     log.debug('Like all comment : ' + sad_posts.length);
                     sendAnalytic("facebook-comment");
                     break;
