@@ -89,6 +89,7 @@ var CONSTANT = {
             "LIKE-COMMENT": 'like-comment',
             "OPEN-COMMENT": 'open-comment',
             "INVITE-FRIEND": "invite-friend",
+            "LOVE-ALL":"love-all",
             "COMMENT": "comment",
             "STOP": "stop",
             "OPTION": "option"
@@ -160,6 +161,14 @@ function genericOnClick(info, tab) {
             ]);
             updateNumberOfUsed();
             break;
+        case CONSTANT["FACEBOOK"]["MENUS"]["LOVE-ALL"]:
+            executeScripts(null, [
+                { file: "libs/jquery.js" },
+                { file: "scripts/utils.js" },
+                { file: "scripts/fb-emotion.js" }
+            ]);
+            updateNumberOfUsed();
+            break;
         case CONSTANT["FACEBOOK"]["MENUS"]["OPTION"]:
             openOptionPage();
             //updateNumberOfUsed();
@@ -190,6 +199,8 @@ function createContextMenus() {
     chrome.contextMenus.create({ "id": CONSTANT["FACEBOOK"]["MENUS"]["LIKE-ALL"], "title": "Like all", "parentId": rootFbMenu, documentUrlPatterns: fbUrlParterns });
     chrome.contextMenus.create({ "id": CONSTANT["FACEBOOK"]["MENUS"]["LIKE-POST"], "title": "Like post", "parentId": rootFbMenu, documentUrlPatterns: fbUrlParterns });
     chrome.contextMenus.create({ "id": CONSTANT["FACEBOOK"]["MENUS"]["LIKE-COMMENT"], "title": "Like comment", "parentId": rootFbMenu, documentUrlPatterns: fbUrlParterns });
+    chrome.contextMenus.create({ "id": "separator21", type: 'separator', "parentId": rootFbMenu, documentUrlPatterns: fbUrlParterns });
+    chrome.contextMenus.create({ "id": CONSTANT["FACEBOOK"]["MENUS"]["LOVE-ALL"], "title": "Love all", "parentId": rootFbMenu, documentUrlPatterns: fbUrlParterns });
     chrome.contextMenus.create({ "id": "separator3", type: 'separator', "parentId": rootFbMenu, documentUrlPatterns: fbUrlParterns });
     chrome.contextMenus.create({ "id": CONSTANT["FACEBOOK"]["MENUS"]["OPEN-COMMENT"], "title": "Open comments", "parentId": rootFbMenu, documentUrlPatterns: fbUrlParterns });
     chrome.contextMenus.create({ "id": "separator4", type: 'separator', "parentId": rootFbMenu, documentUrlPatterns: fbUrlParterns });
