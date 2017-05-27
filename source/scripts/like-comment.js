@@ -1,4 +1,3 @@
-var MAX_LOAD_MORE_COMMENT = 20;
 chrome.storage.sync.get({
     "google": "post",
     "google_time": "1.0",
@@ -8,7 +7,8 @@ chrome.storage.sync.get({
     "numberOfScroll": 0
 }, function(cfgData) {
     log.debug(cfgData);
-    addRunningBackgroundColor();
+    log.debug("Like all comments is running............");
+    Utils.addRunningBackgroundColor();
     var scrollTimes = Number(cfgData["numberOfScroll"]) + 1;
     var timerPerClick = Number(cfgData["facebook_time"]) * 1000 * 2;
     main(scrollTimes, timerPerClick);
@@ -16,17 +16,16 @@ chrome.storage.sync.get({
 
 function main(scrollTimes, timerPerClick) {
     log.debug('scrollTimes ' + scrollTimes + " ; timerPerClick : " + timerPerClick);
-    loadMoreByScroll(null, scrollTimes).then(function(response) {
+    Utils.loadMoreByScroll(null, scrollTimes).then(function(response) {
         log.debug('Done load more by scroll');
         var moreCommentSelecor = "a[role='button'][class='UFIPagerLink']";
-        loadMoreByElement(moreCommentSelecor, MAX_LOAD_MORE_COMMENT).then(function() {
+        Utils.loadMoreByElement(moreCommentSelecor, MAX_LOAD_MORE_COMMENT).then(function() {
             log.debug('Done load more by click on button');
-            var commentSelector = "a[data-testid='ufi_comment_like_link'][aria-pressed='false'],a[data-testid='fb-ufi-likelink'][aria-pressed='false'],a[class='UFIReactionLink'][data-ft='{\"tn\":\">\"}']";
-            var buttons = $( commentSelector );
+            var buttons = $( COMMENT_SELECTOR );
             log.debug('Number of buttons ' + buttons.length);
-            clickButtonListOneByOne(buttons, timerPerClick, 0).then(function(done) {
-                sendNumberToActionButton(0);
-                removeRunningBackgroundColor();
+            Utils.clickButtonListOneByOne(buttons, timerPerClick, 0).then(function(done) {
+                Utils.sendNumberToActionButton(0);
+                Utils.removeRunningBackgroundColor();
             });
         });
     });

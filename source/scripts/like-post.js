@@ -7,7 +7,7 @@ chrome.storage.sync.get({
     "numberOfScroll": 0
 }, function(cfgData) {
     log.debug(cfgData);
-    addRunningBackgroundColor();
+    Utils.addRunningBackgroundColor();
     var scrollTimes = Number(cfgData["numberOfScroll"]) + 1;
     var timerPerClick = Number(cfgData["facebook_time"]) * 1000 * 2;
     main(scrollTimes, timerPerClick);
@@ -15,16 +15,16 @@ chrome.storage.sync.get({
 
 function main(scrollTimes, timerPerClick) {
     log.debug('scrollTimes ' + scrollTimes + " ; timerPerClick : " + timerPerClick);
-    loadMoreByScroll(null, scrollTimes).then(function(response) {
+    Utils.loadMoreByScroll(null, scrollTimes).then(function(response) {
         log.debug('Like post  Done load more page');
-        var buttons = $("a[role='button'][aria-pressed='false']").filter(function(index) {
+        var buttons = $(POST_SELECTOR).filter(function(index) {
             var button = $(this);
             return !button.hasClass("UFIReactionLink");
         });
         log.debug('Like post  Number of buttons ' + buttons.length);
-        clickButtonListOneByOne(buttons, timerPerClick, 0).then(function(done) {
-            sendNumberToActionButton(0);
-            removeRunningBackgroundColor();
+        Utils.clickButtonListOneByOne(buttons, timerPerClick, 0).then(function(done) {
+            Utils.sendNumberToActionButton(0);
+            Utils.removeRunningBackgroundColor();
         });
     });
 }

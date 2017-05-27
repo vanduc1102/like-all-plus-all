@@ -8,7 +8,18 @@ var CLICK_BUTTON = true;
 var log = {};
 
 var Utils = {
-    fireEvent: fireEvent
+    fireEvent: fireEvent,
+    sendNumberToActionButton: sendNumberToActionButton,
+    removeRunningBackgroundColor: removeRunningBackgroundColor,
+    addRunningBackgroundColor: addRunningBackgroundColor,
+    getRandom: getRandom,
+    loadMoreByElement: loadMoreByElement,
+    loadMoreByScroll: loadMoreByScroll,
+    clickOnButton: clickOnButton,
+    clickButtonListOneByOne: clickButtonListOneByOne,
+    clickButtonListOneByOneWithCloseWarning: clickButtonListOneByOneWithCloseWarning,
+    clickOnElementAndWait: clickOnElementAndWait,
+    clickOnElementTill: clickOnElementTill
 };
 
 log.ASSERT = 1;
@@ -66,7 +77,7 @@ function clickOnButton(button, time, number, additionalTask) {
             executeFunction(additionalTask);
             // The root of everything
             number++;
-            log.debug("button clicked : " + number + " ; element ",button);
+            log.debug("button clicked : " + number);
             if (CLICK_BUTTON) {
                 button.click();
             }
@@ -158,10 +169,11 @@ function clickOnElementAndWait(cssSelector) {
         }, 1000 + rand);
 
         setTimeout(function() {
-            log.debug("clickOnElementAndWait  ");
+            log.debug("clickOnElementAndWait - just keep going.");
             d.resolve();
         }, 5000 + rand);
     } else {
+        log.debug("clickOnElementAndWait - no more button to click.");
         d.reject();
     }
     return d.promise();
