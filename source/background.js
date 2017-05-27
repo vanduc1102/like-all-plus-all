@@ -90,6 +90,7 @@ var CONSTANT = {
             "LIKE-COMMENT": 'like-comment',
             "OPEN-COMMENT": 'open-comment',
             "INVITE-FRIEND": "invite-friend",
+            "LOVE-ALL":"love-all",
             "COMMENT": "comment",
             "STOP": "stop",
             "OPTION": "option"
@@ -158,6 +159,14 @@ function genericOnClick(info, tab) {
                 { file: "libs/jquery.js" },
                 { file: "scripts/utils.js" },
                 { file: "scripts/open-comment.js" }
+            ]);
+            updateNumberOfUsed();
+            break;
+        case CONSTANT["FACEBOOK"]["MENUS"]["LOVE-ALL"]:
+            executeScripts(null, [
+                { file: "libs/jquery.js" },
+                { file: "scripts/utils.js" },
+                { file: "scripts/fb-emotion.js" }
             ]);
             updateNumberOfUsed();
             break;

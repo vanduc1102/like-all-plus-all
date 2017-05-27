@@ -3,7 +3,7 @@
  * Logging a message via `LOG && log.v('x');` allows minification
  * tools to omit logging lines altogether when LOG is false.
  */
-var DEBUG = false;
+var DEBUG = true;
 var CLICK_BUTTON = true;
 var log = {};
 
@@ -66,7 +66,7 @@ function clickOnButton(button, time, number, additionalTask) {
             executeFunction(additionalTask);
             // The root of everything
             number++;
-            log.debug("button clicked : " + number);
+            log.debug("button clicked : " + number + " ; element ",button);
             if (CLICK_BUTTON) {
                 button.click();
             }
@@ -74,6 +74,7 @@ function clickOnButton(button, time, number, additionalTask) {
             d.resolve(number);
         }, time + rand);
     } else {
+        log.debug("Button is invisible : ", button);
         d.resolve(number);
     }
     return d.promise();
@@ -85,13 +86,13 @@ function executeFunction(varFunc) {
     }
 }
 
-function clickButtonListOneByOne(buttons, time, number, additionalTask) {
+function clickButtonListOneByOne(buttons, time, number, taskAfterButtonClick) {
     var d = $.Deferred();
     var promise = d.promise();
     $.each(buttons, function(index, button) {
         promise = promise.then(function(number) {
             number = number === undefined ? 0 : number;
-            return clickOnButton(button, time, number, additionalTask);
+            return clickOnButton(button, time, number, taskAfterButtonClick);
         });
     });
     d.resolve();
@@ -408,7 +409,7 @@ function removeRunningBackgroundColor() {
 }
 
 function fireEvent(node, eventName) {
-    log.debug("content_script - fireEvent");
+    log.debug("content_script - fireEvent - "+ eventName);
     // Make sure we use the ownerDocument from the provided node to avoid cross-window problems
     var doc;
     if (node.ownerDocument) {
@@ -431,6 +432,9 @@ function fireEvent(node, eventName) {
             case "click": // Dispatching of 'click' appears to not work correctly in Safari. Use 'mousedown' or 'mouseup' instead.
             case "mousedown":
             case "mouseup":
+            case "mouseover":
+            case "mouseout":
+            case "mouseleave":
                 eventClass = "MouseEvents";
                 break;
 
@@ -458,5 +462,4 @@ function fireEvent(node, eventName) {
         event.synthetic = true; // allow detection of synthetic events
         node.fireEvent("on" + eventName, event);
     }
-
-};
+}
