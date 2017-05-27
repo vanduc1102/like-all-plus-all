@@ -1,6 +1,6 @@
-var MAX_LOAD_MORE_COMMENT = 1;
 var fbEmotion = {
     start: function (){
+        log.debug("FB reaction to all posts is running........");
         var fbEmotion = this;
         chrome.storage.sync.get({
             "google": "post",
@@ -12,7 +12,7 @@ var fbEmotion = {
             'fb_emotion':'like'
         }, function(cfgData) {
             log.debug(cfgData);
-            addRunningBackgroundColor();
+            Utils.addRunningBackgroundColor();
             var scrollTimes = Number(cfgData["numberOfScroll"]) + 1;
             var timerPerClick = Number(cfgData["facebook_time"]) * 1000 * 2;
             // var emotionType = cfgData['fb_emotion'];
@@ -24,17 +24,16 @@ var fbEmotion = {
     main: function( scrollTimes, timerPerClick, emotionType ) {
         var fbEmotion = this;
         log.debug('scrollTimes ' + scrollTimes + " ; timerPerClick : " + timerPerClick);
-        loadMoreByScroll(null, scrollTimes).then(function(response) {
-            log.debug('Done load more by scroll');
-            var moreCommentSelecor = "a[role='button'][class='UFIPagerLink']";
-            loadMoreByElement(moreCommentSelecor, MAX_LOAD_MORE_COMMENT).then(function() {
-                log.debug('Done load more by click on button');
-                var buttons = $("a[role='button'][aria-pressed='false'],a[role='button'][data-ft='{\"tn\":\">\"}']");
-                log.debug('Number of buttons ' + buttons.length);
-                fbEmotion.hoverAndClickOnButton(buttons, emotionType, timerPerClick, 0).then(function(done) {
-                    sendNumberToActionButton(0);
-                    removeRunningBackgroundColor();
-                });
+        Utils.loadMoreByScroll(null, scrollTimes).then(function(response) {
+            log.debug('Like post  Done load more page');
+            var buttons = $(POST_SELECTOR).filter(function(index) {
+                var button = $(this);
+                return !button.hasClass("UFIReactionLink");
+            });
+            log.debug('Like post  Number of buttons ' + buttons.length);
+            fbEmotion.hoverAndClickOnButton(buttons, emotionType, timerPerClick, 0).then(function(done) {
+                Utils.sendNumberToActionButton(0);
+                Utils.removeRunningBackgroundColor();
             });
         });
     },
@@ -57,19 +56,19 @@ var fbEmotion = {
         var fbEmotion = this;
         var d = $.Deferred();
         var promise = d.promise();
-        fireEvent( button, 'mouseover');
+        Utils.fireEvent( button, 'mouseover');
         window.setTimeout(() => {
             var emotionBtn = fbEmotion.getEmotionButton(emotionType);
             log.debug("Show emotion bar, now let click on button. Time for click : "+ time);
-            clickOnButton( emotionBtn, time, number, taskAfterButtonClick).then(function(number){
+            Utils.clickOnButton( emotionBtn, time, number, taskAfterButtonClick).then(function(number){
                 window.setTimeout(() => {
-                    fireEvent( button, 'mouseout');
+                    Utils.fireEvent( button, 'mouseout');
                     window.setTimeout(() => {
                         d.resolve( number );
-                    }, getRandom(500,1000));
-                },getRandom(500, 1000) );
+                    }, Utils.getRandom(500,1000));
+                }, Utils.getRandom(500, 1000) );
             });
-        }, 1000 + getRandom(1, 1000));
+        }, 1000 + Utils.getRandom(1, 1000));
         return promise;
     },
 

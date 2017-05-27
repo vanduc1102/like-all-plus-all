@@ -88,6 +88,9 @@ var CONSTANT = {
             "LIKE-ALL": "like-all",
             "LIKE-POST": 'like-post',
             "LIKE-COMMENT": 'like-comment',
+            "REACT-ALL": "react-all",
+            "REACT-POST": 'react-posts',
+            "REACT-COMMENT": 'react-comments',
             "OPEN-COMMENT": 'open-comment',
             "INVITE-FRIEND": "invite-friend",
             "LOVE-ALL":"love-all",
@@ -134,6 +137,7 @@ function genericOnClick(info, tab) {
             executeScripts(null, [
                 { file: "libs/jquery.js" },
                 { file: "scripts/utils.js" },
+                { file: "scripts/fb-utils.js" },
                 { file: "scripts/like-all.js" }
             ]);
             updateNumberOfUsed();
@@ -142,6 +146,7 @@ function genericOnClick(info, tab) {
             executeScripts(null, [
                 { file: "libs/jquery.js" },
                 { file: "scripts/utils.js" },
+                { file: "scripts/fb-utils.js" },                
                 { file: "scripts/like-post.js" }
             ]);
             updateNumberOfUsed();
@@ -150,7 +155,35 @@ function genericOnClick(info, tab) {
             executeScripts(null, [
                 { file: "libs/jquery.js" },
                 { file: "scripts/utils.js" },
+                { file: "scripts/fb-utils.js" },
                 { file: "scripts/like-comment.js" }
+            ]);
+            updateNumberOfUsed();
+            break;
+        case CONSTANT["FACEBOOK"]["MENUS"]["REACT-ALL"]:
+            executeScripts(null, [
+                { file: "libs/jquery.js" },
+                { file: "scripts/utils.js" },
+                { file: "scripts/fb-utils.js" },
+                { file: "scripts/fb-reaction-all.js" }
+            ]);
+            updateNumberOfUsed();
+            break;
+        case CONSTANT["FACEBOOK"]["MENUS"]["REACT-POST"]:
+            executeScripts(null, [
+                { file: "libs/jquery.js" },
+                { file: "scripts/utils.js" },
+                { file: "scripts/fb-utils.js" },                
+                { file: "scripts/fb-reaction-post.js" }
+            ]);
+            updateNumberOfUsed();
+            break;
+        case CONSTANT["FACEBOOK"]["MENUS"]["REACT-COMMENT"]:
+            executeScripts(null, [
+                { file: "libs/jquery.js" },
+                { file: "scripts/utils.js" },
+                { file: "scripts/fb-utils.js" },
+                { file: "scripts/fb-reaction-comment.js" }
             ]);
             updateNumberOfUsed();
             break;
@@ -200,9 +233,13 @@ function createContextMenus() {
     createMenuItem( "separator1", undefined, rootFbMenu, SEPARATOR_TYPE, undefined);
     createMenuItem( CONSTANT["FACEBOOK"]["MENUS"]["INVITE-FRIEND"], "Invite Friends", rootFbMenu, undefined, undefined);
     createMenuItem( "separator2", undefined, rootFbMenu, SEPARATOR_TYPE, undefined);
+    createMenuItem( CONSTANT["FACEBOOK"]["MENUS"]["REACT-ALL"], "React to all", rootFbMenu, undefined, undefined);
+    createMenuItem( CONSTANT["FACEBOOK"]["MENUS"]["REACT-POST"], "React to Posts", rootFbMenu, undefined, undefined);
+    createMenuItem( CONSTANT["FACEBOOK"]["MENUS"]["REACT-COMMENT"], "React to Comments", rootFbMenu, undefined, undefined);
+    createMenuItem( "separator21", undefined, rootFbMenu, SEPARATOR_TYPE, undefined);
     createMenuItem( CONSTANT["FACEBOOK"]["MENUS"]["LIKE-ALL"], "Like all", rootFbMenu, undefined, undefined);
-    createMenuItem( CONSTANT["FACEBOOK"]["MENUS"]["LIKE-POST"], "Like post", rootFbMenu, undefined, undefined);
-    createMenuItem( CONSTANT["FACEBOOK"]["MENUS"]["LIKE-COMMENT"], "Like comment", rootFbMenu, undefined, undefined);
+    createMenuItem( CONSTANT["FACEBOOK"]["MENUS"]["LIKE-POST"], "Like posts", rootFbMenu, undefined, undefined);
+    createMenuItem( CONSTANT["FACEBOOK"]["MENUS"]["LIKE-COMMENT"], "Like comments", rootFbMenu, undefined, undefined);
     createMenuItem( "separator3", undefined, rootFbMenu, SEPARATOR_TYPE, undefined);
     createMenuItem( CONSTANT["FACEBOOK"]["MENUS"]["OPEN-COMMENT"], "Open comments", rootFbMenu, undefined, undefined);
     createMenuItem( "separator4", undefined, rootFbMenu, SEPARATOR_TYPE, undefined);
