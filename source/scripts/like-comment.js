@@ -1,4 +1,4 @@
-var MAX_LOAD_MORE_COMMENT = 50;
+var MAX_LOAD_MORE_COMMENT = 20;
 chrome.storage.sync.get({
     "google": "post",
     "google_time": "1.0",
@@ -21,7 +21,8 @@ function main(scrollTimes, timerPerClick) {
         var moreCommentSelecor = "a[role='button'][class='UFIPagerLink']";
         loadMoreByElement(moreCommentSelecor, MAX_LOAD_MORE_COMMENT).then(function() {
             log.debug('Done load more by click on button');
-            var buttons = $("a[data-testid='fb-ufi-likelink'][aria-pressed='false'],a[class='UFIReactionLink'][data-ft='{\"tn\":\">\"}']");
+            var commentSelector = "a[data-testid='ufi_comment_like_link'][aria-pressed='false'],a[data-testid='fb-ufi-likelink'][aria-pressed='false'],a[class='UFIReactionLink'][data-ft='{\"tn\":\">\"}']";
+            var buttons = $( commentSelector );
             log.debug('Number of buttons ' + buttons.length);
             clickButtonListOneByOne(buttons, timerPerClick, 0).then(function(done) {
                 sendNumberToActionButton(0);

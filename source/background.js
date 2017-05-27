@@ -4,6 +4,7 @@ var youtubeURL = "www.youtube.com/watch";
 var count = 0;
 var currentTab = null;
 var _gaq;
+var FB_URL_PARTERNS = ["https://*.facebook.com/*", "http://*.facebook.com/*"];
 chrome.browserAction.onClicked.addListener(function(tab) {
     try {
         executeScripts(null, [
@@ -185,27 +186,43 @@ function genericOnClick(info, tab) {
 
 }
 
-function createContextMenus() {
-    var fbUrlParterns = ["https://*.facebook.com/*", "http://*.facebook.com/*"];
-    var rootFbMenu = chrome.contextMenus.create({ id: "facebook-auto", "title": "Facebook Auto", "contexts": ["all"], documentUrlPatterns: fbUrlParterns });
-    chrome.contextMenus.onClicked.addListener(genericOnClick);
 
+
+function createContextMenus() {
+    var menuTitle = "Facebook Auto";
+    menuTitle =  DEBUG ? menuTitle + " - Dev" : menuTitle;   
+    var rootFbMenu = createMenuItem( "facebook-auto", menuTitle, undefined, undefined, ["all"]);
+    chrome.contextMenus.onClicked.addListener( genericOnClick );
+    var SEPARATOR_TYPE = "separator";
     // Create a parent item and two children.
-    chrome.contextMenus.create({ "id": CONSTANT["FACEBOOK"]["MENUS"]["CONFIRM-FRIEND"], "title": "Accept Friends", "parentId": rootFbMenu, documentUrlPatterns: fbUrlParterns });
-    chrome.contextMenus.create({ "id": CONSTANT["FACEBOOK"]["MENUS"]["REQUEST-FRIEND"], "title": "Add Friends", "parentId": rootFbMenu, documentUrlPatterns: fbUrlParterns });
-    chrome.contextMenus.create({ "id": "separator1", type: 'separator', "parentId": rootFbMenu, documentUrlPatterns: fbUrlParterns });
-    chrome.contextMenus.create({ "id": CONSTANT["FACEBOOK"]["MENUS"]["INVITE-FRIEND"], "title": "Invite Friends", "parentId": rootFbMenu, documentUrlPatterns: fbUrlParterns });
-    chrome.contextMenus.create({ "id": "separator2", type: 'separator', "parentId": rootFbMenu, documentUrlPatterns: fbUrlParterns });
-    chrome.contextMenus.create({ "id": CONSTANT["FACEBOOK"]["MENUS"]["LIKE-ALL"], "title": "Like all", "parentId": rootFbMenu, documentUrlPatterns: fbUrlParterns });
-    chrome.contextMenus.create({ "id": CONSTANT["FACEBOOK"]["MENUS"]["LIKE-POST"], "title": "Like post", "parentId": rootFbMenu, documentUrlPatterns: fbUrlParterns });
-    chrome.contextMenus.create({ "id": CONSTANT["FACEBOOK"]["MENUS"]["LIKE-COMMENT"], "title": "Like comment", "parentId": rootFbMenu, documentUrlPatterns: fbUrlParterns });
-    chrome.contextMenus.create({ "id": "separator21", type: 'separator', "parentId": rootFbMenu, documentUrlPatterns: fbUrlParterns });
-    chrome.contextMenus.create({ "id": CONSTANT["FACEBOOK"]["MENUS"]["LOVE-ALL"], "title": "Love all", "parentId": rootFbMenu, documentUrlPatterns: fbUrlParterns });
-    chrome.contextMenus.create({ "id": "separator3", type: 'separator', "parentId": rootFbMenu, documentUrlPatterns: fbUrlParterns });
-    chrome.contextMenus.create({ "id": CONSTANT["FACEBOOK"]["MENUS"]["OPEN-COMMENT"], "title": "Open comments", "parentId": rootFbMenu, documentUrlPatterns: fbUrlParterns });
-    chrome.contextMenus.create({ "id": "separator4", type: 'separator', "parentId": rootFbMenu, documentUrlPatterns: fbUrlParterns });
-    chrome.contextMenus.create({ "id": CONSTANT["FACEBOOK"]["MENUS"]["STOP"], "title": "Stop by Reload (F5)", "parentId": rootFbMenu, documentUrlPatterns: fbUrlParterns });
-    chrome.contextMenus.create({ "id": CONSTANT["FACEBOOK"]["MENUS"]["OPTION"], "title": "Option", "parentId": rootFbMenu, documentUrlPatterns: fbUrlParterns });
+    createMenuItem( CONSTANT["FACEBOOK"]["MENUS"]["CONFIRM-FRIEND"], "Accept Friends", rootFbMenu, undefined, undefined);
+    createMenuItem( CONSTANT["FACEBOOK"]["MENUS"]["REQUEST-FRIEND"], "Add Friends", rootFbMenu, undefined, undefined);
+    createMenuItem( "separator1", undefined, rootFbMenu, SEPARATOR_TYPE, undefined);
+    createMenuItem( CONSTANT["FACEBOOK"]["MENUS"]["INVITE-FRIEND"], "Invite Friends", rootFbMenu, undefined, undefined);
+    createMenuItem( "separator2", undefined, rootFbMenu, SEPARATOR_TYPE, undefined);
+    createMenuItem( CONSTANT["FACEBOOK"]["MENUS"]["LIKE-ALL"], "Like all", rootFbMenu, undefined, undefined);
+    createMenuItem( CONSTANT["FACEBOOK"]["MENUS"]["LIKE-POST"], "Like post", rootFbMenu, undefined, undefined);
+    createMenuItem( CONSTANT["FACEBOOK"]["MENUS"]["LIKE-COMMENT"], "Like comment", rootFbMenu, undefined, undefined);
+    createMenuItem( "separator3", undefined, rootFbMenu, SEPARATOR_TYPE, undefined);
+    createMenuItem( CONSTANT["FACEBOOK"]["MENUS"]["OPEN-COMMENT"], "Open comments", rootFbMenu, undefined, undefined);
+    createMenuItem( "separator4", undefined, rootFbMenu, SEPARATOR_TYPE, undefined);
+    createMenuItem( CONSTANT["FACEBOOK"]["MENUS"]["STOP"], "Stop by Reload (F5)", rootFbMenu, undefined, undefined);
+    createMenuItem( CONSTANT["FACEBOOK"]["MENUS"]["OPTION"], "Option", rootFbMenu, undefined, undefined);
+}
+
+var allMenuIds = {};
+function createMenuItem( id, title, parentId, type, context){
+    if( !allMenuIds[ id ]){
+       allMenuIds[ id ] = chrome.contextMenus.create({ 
+           "id": id, 
+           "title": title, 
+           "type": type,
+           "parentId": parentId, 
+           "documentUrlPatterns": FB_URL_PARTERNS ,
+           "contexts": context
+        });
+        return allMenuIds[id];
+    }
 }
 
 createContextMenus();
