@@ -9,14 +9,14 @@ var fbEmotion = {
             "facebook_time": "1.0",
             "twitter_time": "0.8",
             "numberOfScroll": 0,
-            'fb_emotion':'like'
+            'facebook-reaction-type': 2
         }, function(cfgData) {
             log.debug(cfgData);
             Utils.addRunningBackgroundColor();
             var scrollTimes = Number(cfgData["numberOfScroll"]) + 1;
             var timerPerClick = Number(cfgData["facebook_time"]) * 1000 * 2;
             // var emotionType = cfgData['fb_emotion'];
-            var emotionType = 'love';
+            var emotionType = Number(cfgData['facebook-reaction-type']);
             fbEmotion.main(scrollTimes, timerPerClick, emotionType );
         });
     },
@@ -77,34 +77,10 @@ var fbEmotion = {
         var fbEmotion = this;
         var selector = "div.uiContextualLayerParent > div.uiLayer div[role='presentation'] > div[role='toolbar'] > span._iuw";
         var buttons = $( selector );
-        var button = buttons[ fbEmotion.getIndexOrder(emotionType) ];
+        var btnIndex = emotionType - 1;
+        var button = btnIndex >= buttons.length ? buttons[1] : buttons [btnIndex];
         log.debug('Emotion button : ', button);
         return button;
-    },
-
-    getIndexOrder : function ( emotionType ){
-        var index = 0;
-        switch( emotionType ){
-            case 'like':
-                index = 0;
-                break;
-            case 'love':
-                index = 1;
-                break;
-            case 'haha':
-                index = 2;
-                break;
-            case 'wow':
-                index = 3;
-                break;
-            case 'sad':
-                index = 4;
-                break;
-            case 'angry':
-                index = 5;
-                break;
-        }
-        return index;
     }
 }
 
