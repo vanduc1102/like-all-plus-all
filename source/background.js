@@ -234,8 +234,8 @@ function createContextMenus() {
     createMenuItem( CONSTANT["FACEBOOK"]["MENUS"]["INVITE-FRIEND"], "Invite Friends", rootFbMenu, undefined, undefined);
     createMenuItem( "separator2", undefined, rootFbMenu, SEPARATOR_TYPE, undefined);
     createMenuItem( CONSTANT["FACEBOOK"]["MENUS"]["REACT-ALL"], "React to all", rootFbMenu, undefined, undefined);
-    createMenuItem( CONSTANT["FACEBOOK"]["MENUS"]["REACT-POST"], "React to Posts", rootFbMenu, undefined, undefined);
-    createMenuItem( CONSTANT["FACEBOOK"]["MENUS"]["REACT-COMMENT"], "React to Comments", rootFbMenu, undefined, undefined);
+    createMenuItem( CONSTANT["FACEBOOK"]["MENUS"]["REACT-POST"], "React to posts", rootFbMenu, undefined, undefined);
+    createMenuItem( CONSTANT["FACEBOOK"]["MENUS"]["REACT-COMMENT"], "React to comments", rootFbMenu, undefined, undefined);
     createMenuItem( "separator21", undefined, rootFbMenu, SEPARATOR_TYPE, undefined);
     createMenuItem( CONSTANT["FACEBOOK"]["MENUS"]["LIKE-ALL"], "Like all", rootFbMenu, undefined, undefined);
     createMenuItem( CONSTANT["FACEBOOK"]["MENUS"]["LIKE-POST"], "Like posts", rootFbMenu, undefined, undefined);
