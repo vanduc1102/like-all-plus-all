@@ -1,7 +1,7 @@
 var fbEmotion = {
     start: function (){
         var fbEmotion = this;
-        console.log("FB reaction on all posts and comments is running.....");
+        log.debug("FB reaction on all posts and comments is running.....");
         chrome.storage.sync.get({
             "google": "post",
             "google_time": "1.0",
