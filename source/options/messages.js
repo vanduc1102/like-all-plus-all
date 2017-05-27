@@ -23,11 +23,13 @@ var messages = {
         "msgYoutube": "Youtube",
         "msgYoutubeAutoLike": "Tự động thích Youtube video",
         "msgCountNumber": "Bạn đã sử dụng nút Like-all {0} lần.",
-        "msgPleaseReview": "Hãy đánh giá giúp tôi.",
+        "msgPleaseReview": "Hãy đánh giá giúp mình.",
         "msgGoogleAnalyticAllow": "Đồng ý gửi dữ liệu thống kê đến Google",
         "msgGoogleAnalytic": "Dữ liệu thống kê",
         "msgAutoLike": "Tự động thích",
-        "msgAutoLikeCheckBox": "Cho phép tự động thích"
+        "msgAutoLikeCheckBox": "Cho phép tự động thích",
+        "msgFbReaction": "Chọn loại cảm xúc",
+        "msgFbReactionTypeToolTip":"Hãy chọn một số thứ tự tương ứng với biểu tượng trên thanh cảm xúc."
     },
     'en': {
         'btnSave': 'Save',
@@ -57,7 +59,9 @@ var messages = {
         "msgGoogleAnalyticAllow": "Allow send data to Google Analytics",
         "msgGoogleAnalytic": "Goole Analytics",
         "msgAutoLike": "Auto Like",
-        "msgAutoLikeCheckBox": "Allow auto like"
+        "msgAutoLikeCheckBox": "Allow auto like",
+        "msgFbReaction": "Reaction type",
+        "msgFbReactionTypeToolTip":"Please choose a number according to icon's order in reaction popup."
     },
     'fr': {
         'btnSave': 'Enregistrer',

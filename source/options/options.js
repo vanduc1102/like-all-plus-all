@@ -1,10 +1,10 @@
 var userLang = navigator.language || navigator.userLanguage;
 userLang = userLang.substring(0, 2);
-//userLang = "vi";
+// userLang = "vi";
 if (!messages[userLang]) {
     userLang = 'en';
 }
-//userLang='fr';
+// userLang='fr';
 var paypalButtonVal = (messages[userLang]['btnSubmitPayPal']).replace('{}', 2);
 $("#paypal-button").val(paypalButtonVal);
 
@@ -21,6 +21,10 @@ $(function() {
 function updateNumber(number) {
     var strCount = messages[userLang]['msgCountNumber'].replace("{0}", "<b style='color:red'>" + number + "</b>");
     $("[i18n='msgCountNumber']").html(strCount);
+}
+
+function getMsg(msgId){
+    return messages[userLang][msgId];
 }
 
 function updateLinkAnchorTag(anchorSelector) {
@@ -45,6 +49,7 @@ function updateLinkAnchorTag(anchorSelector) {
         var googleAnalytic = getCheckBoxValue('google-analytic');
         var allowAutoLike = getCheckBoxValue('allow-auto-like');
         var autoLikeTime = document.getElementById('auto-like-time').value;
+        var facebookReactionType = document.getElementById('facebook-reaction-type').value;
 
         log.debug(youtubeCheck);
         chrome.storage.sync.set({
@@ -57,7 +62,8 @@ function updateLinkAnchorTag(anchorSelector) {
             "youtube_like": youtubeCheck,
             'google_analytic': googleAnalytic,
             'allow-auto-like': allowAutoLike,
-            'auto-like-time': autoLikeTime
+            'auto-like-time': autoLikeTime,
+            'facebook-reaction-type': facebookReactionType
         }, function() {
             // Update status to let user know options were saved.
             var saveStatus = $('#save-success');
@@ -82,7 +88,8 @@ function updateLinkAnchorTag(anchorSelector) {
             "count_number": 1,
             'google_analytic': true,
             'allow-auto-like': false,
-            'auto-like-time': 5
+            'auto-like-time': 5,
+            'facebook-reaction-type': 2
         }, function(item) {
             document.getElementById('google').value = item['google'];
             document.getElementById('google-time').value = item['google_time'];
@@ -91,16 +98,26 @@ function updateLinkAnchorTag(anchorSelector) {
             document.getElementById('twitter-time').value = item['twitter_time'];
             document.getElementById('auto-scroll-times').value = item['numberOfScroll'];
             document.getElementById('auto-like-time').value = item['auto-like-time'];
+            document.getElementById('facebook-reaction-type').value = item['facebook-reaction-type'];
             setCheckBoxValue("youtube-like", item['youtube_like']);
             setCheckBoxValue("google-analytic", item['google_analytic']);
             setCheckBoxValue("allow-auto-like", item['allow-auto-like']);
             updateNumber(item["count_number"]);
             // console.log(item);
+            updateToolTip('facebook-reaction-type', 'msgFbReactionTypeToolTip');
         });
+        
     });
 
     function setCheckBoxValue(checkBoxId, value) {
         document.getElementById(checkBoxId).checked = value;
+    }
+
+    function updateToolTip(elementId, msgId){
+        var msg = getMsg(msgId);
+        if( msg ){
+            document.getElementById(elementId).title = msg;
+        }
     }
 
     function getCheckBoxValue(checkboxClass) {

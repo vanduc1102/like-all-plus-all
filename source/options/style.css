@@ -107,7 +107,7 @@ select, input{
 	background-color: #ffffff;
 	background-image: none;
 	border: 1px solid #cccccc;
-	border-radius: 0;
+	border-radius: 5px;
 }
 select{
 	width:150px;
@@ -239,6 +239,9 @@ span.count-number{
 .row{
 	display: block;
 	width: 100%;
+}
+.row.fb-reaction{
+	margin-top: 10px;
 }
 .paypal-form{
 	display: inline-block !important;
