@@ -3,7 +3,7 @@
  * Logging a message via `LOG && log.v('x');` allows minification
  * tools to omit logging lines altogether when LOG is false.
  */
-var DEBUG = true;
+var DEBUG = false;
 var CLICK_BUTTON = true;
 var log = {};
 
