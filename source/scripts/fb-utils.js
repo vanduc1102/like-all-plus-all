@@ -1,0 +1,3 @@
+var COMMENT_SELECTOR = "";
+var POST_SELECTOR = "";
+var POST_AND_COMMENT_SELECTOR = "";

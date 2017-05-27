@@ -8,8 +8,7 @@ var CLICK_BUTTON = true;
 var log = {};
 
 var Utils = {
-    fireEvent: fireEvent,
-    hoverAndClickOnButton: hoverAndClickOnButton
+    fireEvent: fireEvent
 };
 
 log.ASSERT = 1;
@@ -67,7 +66,7 @@ function clickOnButton(button, time, number, additionalTask) {
             executeFunction(additionalTask);
             // The root of everything
             number++;
-            log.debug("button clicked : " + number);
+            log.debug("button clicked : " + number + " ; element ",button);
             if (CLICK_BUTTON) {
                 button.click();
             }
@@ -75,6 +74,7 @@ function clickOnButton(button, time, number, additionalTask) {
             d.resolve(number);
         }, time + rand);
     } else {
+        log.debug("Button is invisible : ", button);
         d.resolve(number);
     }
     return d.promise();
@@ -408,74 +408,6 @@ function removeRunningBackgroundColor() {
 
 }
 
-function hoverAndClickOnButton(buttons, emotionType, time, number, taskAfterButtonClick) {
-    var d = $.Deferred();
-    var promise = d.promise();
-    $.each(buttons, function(index, button) {
-        promise = promise.then(function(number) {
-            number = number === undefined ? 0 : number;
-            // return clickOnButton(button, time, number, taskAfterButtonClick);
-            return triggerHoverOnElement( button, emotionType, time, number, taskAfterButtonClick);
-            // .then(function() { 
-            //     var emotionBtn = getEmotionButton(emotionType);
-            //     return clickOnButton( emotionBtn, time, number, taskAfterButtonClick);
-            // });
-        });
-    });
-    d.resolve();
-    return promise;
-}
-
-function triggerHoverOnElement( button, emotionType, time, number, taskAfterButtonClick){
-    var d = $.Deferred();
-    var promise = d.promise();
-    fireEvent( button, 'mouseover');
-    window.setTimeout(function() {
-        var emotionBtn = getEmotionButton(emotionType);
-        log.debug("Show emotion bar, now let click on button. Time for click : "+ time);
-        clickOnButton( emotionBtn, time, number, taskAfterButtonClick).then(function(number){
-            log.debug( 'Button is clicked, let finish the job.');
-            fireEvent( button, 'mouseleave');
-            window.setTimeout(function() {
-                d.resolve( number );
-            }, 1000 + getRandom(1, 1000) );
-        });
-    }, 1000 + getRandom(1, 1000));
-    return promise;
-}
-
-function getEmotionButton(emotionType){
-    var selector = "div[role='presentation'] div[role='toolbar'] span._iuw";
-    var button = $( selector )[ getIndexOrder(emotionType) ];
-    log.debug('Emotion button : ', button);
-    return ;
-}
-
-function getIndexOrder( emotionType ){
-    var index = 0;
-    switch( emotionType ){
-        case 'like':
-            index = 0;
-            break;
-        case 'love':
-            index = 1;
-            break;
-        case 'haha':
-            index = 2;
-            break;
-        case 'wow':
-            index = 3;
-            break;
-        case 'sad':
-            index = 4;
-            break;
-        case 'angry':
-            index = 5;
-            break;
-    }
-    return index;
-}
-
 function fireEvent(node, eventName) {
     log.debug("content_script - fireEvent - "+ eventName);
     // Make sure we use the ownerDocument from the provided node to avoid cross-window problems
@@ -501,6 +433,7 @@ function fireEvent(node, eventName) {
             case "mousedown":
             case "mouseup":
             case "mouseover":
+            case "mouseout":
             case "mouseleave":
                 eventClass = "MouseEvents";
                 break;
@@ -529,5 +462,4 @@ function fireEvent(node, eventName) {
         event.synthetic = true; // allow detection of synthetic events
         node.fireEvent("on" + eventName, event);
     }
-
-};
+}
