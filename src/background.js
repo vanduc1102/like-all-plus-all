@@ -40,11 +40,9 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     } catch (e) {
         log.debug(' Exception on chrome.tabs.onUpdated');
     }
-    
     if (url !== undefined && changeInfo.status == "complete" && url.indexOf('youtube') > 0) {
         likeYoutubeVideo(tab.url);
     }
-    
 });
 chrome.runtime.onInstalled.addListener(function(details) {
     log.debug("on Installed");
