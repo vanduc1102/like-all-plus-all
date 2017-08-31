@@ -1,5 +1,6 @@
-.project 
+.project
 firefox/facebook-like-all.xpi
 firefox/packages/browser-action-jplib/node_modules
 *.zip
-dist/
+dist/*.zip
+node_modules/

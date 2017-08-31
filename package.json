@@ -4,11 +4,16 @@
   "description": "Facebook-like-all",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "clean": "rimraf dist/*",
+    "release":"npm run clean && node ./build/release-script.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/vanduc1102/like-all-plus-all.git"
+  },
+  "devDependencies": {
+     "rimraf": "2.5.4",
+     "archiver": "2.0.3"
   },
   "author": "vanducld@gmail.com",
   "license": "ISC",
