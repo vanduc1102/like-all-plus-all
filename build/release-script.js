@@ -1,11 +1,14 @@
-var file_system = require('fs');
+var fs = require('fs');
 var archiver = require('archiver');
 const manifest = require('../src/manifest.json');
 
 var version = 'like-all-v' + manifest.version + '.zip';
-var dist = 'dist/';
-var releasePath =  dist + version;
-var output = file_system.createWriteStream( releasePath, { flag:'w' });
+var distPath = './dist/';
+if( !fs.existsSync(distPath) ) {
+	 fs.mkdirSync(distPath);
+}
+var releasePath =  distPath + version;
+var output = fs.createWriteStream( releasePath, { flag:'w' });
 
 var archive = archiver('zip');
 
