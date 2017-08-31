@@ -106,7 +106,6 @@ function updateLinkAnchorTag(anchorSelector) {
             // console.log(item);
             updateToolTip('facebook-reaction-type', 'msgFbReactionTypeToolTip');
         });
-        
     });
 
     function setCheckBoxValue(checkBoxId, value) {

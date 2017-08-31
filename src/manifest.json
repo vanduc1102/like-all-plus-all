@@ -1,10 +1,10 @@
 {
-    "name": "Like all, plus all - v2",
+    "name": "Like all plus all",
     "short_name": "FB like all",
     "description": "__MSG_appDesc__",
     "version": "1.0.0",
     "background": {
-        "scripts": ["scripts/supported-url-utils.js","scripts/utils.js", "background.js"],
+        "scripts": ["scripts/supported-url-utils.js", "scripts/utils.js", "background.js"],
         "persistent": false
     },
     "permissions": [
@@ -26,7 +26,6 @@
         "48": "assets/icon-give-flower-100.png",
         "128": "assets/icon-give-flower-100.png"
     },
-    "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
     "options_page": "options.html",
     "default_locale": "en",
     "manifest_version": 2
