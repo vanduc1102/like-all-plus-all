@@ -8,8 +8,7 @@
             "scripts/supported-url-utils.js",
             "scripts/utils.js",
             "background.js"
-        ],
-        "persistent": false
+        ]
     },
     "permissions": [
         "contextMenus",
