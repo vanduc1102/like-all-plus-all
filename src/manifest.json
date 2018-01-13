@@ -4,7 +4,11 @@
     "description": "__MSG_appDesc__",
     "version": "1.0.0",
     "background": {
-        "scripts": ["scripts/supported-url-utils.js", "scripts/utils.js", "background.js"],
+        "scripts": [
+            "scripts/supported-url-utils.js",
+            "scripts/utils.js",
+            "background.js"
+        ],
         "persistent": false
     },
     "permissions": [
